@@ -1,12 +1,14 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import log from './log';
+import requestLogger from './log/request-logger';
 import userRoutes from './routes/users';
 import postRoutes from './routes/posts';
 
 dotenv.config();
 
 const app = express();
+app.use(requestLogger);
 
 app.use('/users', userRoutes);
 app.use('/posts', postRoutes);
