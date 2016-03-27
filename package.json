@@ -9,7 +9,7 @@
   "scripts": {
     "start": "npm run build-and-run | bunyan",
     "create-env": "cp .env.sample .env",
-    "build-and-run": "npm run build && node app/server.js",
+    "build-and-run": "npm run build && node -r ./app/set-env.js ./app/server.js",
     "build": "npm run build:js",
     "build:js": "rm -rf app/ && babel src/ -d app/",
     "lint": "eslint .",
@@ -50,6 +50,8 @@
   "dependencies": {
     "bunyan": "^1.8.0",
     "dotenv": "^2.0.0",
-    "express": "^4.13.4"
+    "express": "^4.13.4",
+    "pg": "^4.5.1",
+    "sequelize": "^3.20.0"
   }
 }
