@@ -1,20 +1,21 @@
 import express from 'express';
-import dotenv from 'dotenv';
+import database from './database';
 import log from './log';
 import requestLogger from './log/request-logger';
 import userRoutes from './routes/users';
 import postRoutes from './routes/posts';
 
-dotenv.config();
+database.sync()
+  .then(() => {
+    const app = express();
+    app.use(requestLogger);
 
-const app = express();
-app.use(requestLogger);
+    app.use('/users', userRoutes);
+    app.use('/posts', postRoutes);
 
-app.use('/users', userRoutes);
-app.use('/posts', postRoutes);
+    const port = process.env.CSBLOGS_API_PORT;
 
-const port = process.env.CSBLOGS_API_PORT;
-
-app.listen(port, () => {
-  log.info({ port }, 'CSBlogs API now running');
-});
+    app.listen(port, () => {
+      log.info({ port }, 'CSBlogs API now running');
+    });
+  });
