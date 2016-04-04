@@ -1,12 +1,13 @@
 import User from '../database/models/user';
 
-function removeDatabaseAttributes(users) {
-  return users.map(user => {
-    const noDBUser = user;
-    delete noDBUser.createdAt;
-    delete noDBUser.updatedAt;
-    return noDBUser;
-  });
+function removeNonPublicAttributes(user) {
+  const apiSafeUser = user;
+  delete apiSafeUser.emailAddress;
+  delete apiSafeUser.createdAt;
+  delete apiSafeUser.updatedAt;
+  delete apiSafeUser.verified;
+  delete apiSafeUser.feedLastModified;
+  return apiSafeUser;
 }
 
 export function getAll() {
@@ -16,7 +17,7 @@ export function getAll() {
       raw: true
     })
       .then(allUsers => {
-        const apiSafeUsers = removeDatabaseAttributes(allUsers);
+        const apiSafeUsers = allUsers.map(user => removeNonPublicAttributes(user));
         resolve(apiSafeUsers);
       });
   });
