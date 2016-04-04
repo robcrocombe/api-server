@@ -7,7 +7,7 @@ const router = express.Router(); // eslint-disable-line new-cap
 router.get('/', (req, res) => {
   users.getAll()
     .then(allUsers => {
-      res.json({ users: allUsers });
+      res.json(allUsers);
     })
     .catch(error => {
       log.error({ error }, 'Error getting a list of users');
