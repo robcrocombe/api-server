@@ -22,3 +22,18 @@ export function getAll() {
       });
   });
 }
+
+export function getById(id) {
+  return new Promise((resolve) => {
+    User.findOne({
+      where: {
+        id,
+        verified: true
+      },
+      raw: true
+    })
+      .then(user => {
+        user ? resolve(removeNonPublicAttributes(user)) : resolve(null);
+      });
+  });
+}
