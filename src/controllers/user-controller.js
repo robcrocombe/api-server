@@ -14,6 +14,9 @@ function removeNonPublicAttributes(user) {
 export function getAll() {
   return new Promise((resolve, reject) => {
     User.findAll({
+      order: [
+        ['first_name', 'ASC']
+      ],
       where: { verified: true },
       raw: true
     })

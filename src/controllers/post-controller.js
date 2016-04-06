@@ -11,6 +11,9 @@ function removeNonPublicAttributes(post) {
 export function getAll() {
   return new Promise((resolve, reject) => {
     BlogPost.findAll({
+      order: [
+        ['date_published', 'DESC']
+      ],
       raw: true
     }).then(allPosts => {
       const apiSafePosts = allPosts.map(post => removeNonPublicAttributes(post));
