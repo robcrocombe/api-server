@@ -38,3 +38,21 @@ export function getById(id) {
     });
   });
 }
+
+export function getPage(pageNumber, pageSize) {
+  return new Promise((resolve, reject) => {
+    BlogPost.findAll({
+      order: [
+        ['date_published', 'DESC']
+      ],
+      offset: pageNumber * pageSize,
+      limit: pageSize,
+      raw: true
+    }).then(pageOfPosts => {
+      resolve(pageOfPosts);
+    }).catch(error => {
+      log.error({ error }, 'Error getting page of posts');
+      reject(error);
+    });
+  });
+}
