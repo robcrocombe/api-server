@@ -15,7 +15,7 @@
     "lint": "eslint .",
     "test": "istanbul cover ./node_modules/.bin/_mocha -- --compilers js:babel-register --require tests/chai-config.js --recursive ./tests/**/*.tests.js",
     "deploy": "npm run create-deployment-package && npm run upload-deployment-package && npm run delete-deployment-package",
-    "create-deployment-package": "npm run build && zip -r eb-deployment-package.zip . --exclude node_modules/\\* .git/\\* .env",
+    "create-deployment-package": "npm run build && zip -r eb-deployment-package.zip . --exclude node_modules/\\* .git/\\* app/\\* test/\\* .env",
     "upload-deployment-package": "",
     "delete-deployment-package": "rm eb-deployment-package.zip"
   },
@@ -40,6 +40,7 @@
   },
   "homepage": "https://github.com/csblogs/api.csblogs.com#readme",
   "devDependencies": {
+    "babel-cli": "^6.6.5",
     "babel-preset-es2015": "^6.6.0",
     "babel-register": "^6.7.2",
     "chai": "^3.5.0",
