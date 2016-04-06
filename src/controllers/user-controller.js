@@ -49,3 +49,23 @@ export function getById(id) {
       })
   );
 }
+
+export function getPage(pageNumber, pageSize) {
+  return new Promise((resolve, reject) => {
+    User.findAll({
+      where: {
+        verified: true
+      },
+      offset: pageNumber * pageSize,
+      limit: pageSize,
+      raw: true
+    })
+      .then(pageOfUsers => {
+        resolve(pageOfUsers);
+      })
+      .catch(error => {
+        log.error({ error }, 'Error getting page of users');
+        reject(error);
+      });
+  });
+}
