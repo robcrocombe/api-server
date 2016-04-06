@@ -1,0 +1,93 @@
+# this is an example of the Uber API
+# as a demonstration of an API spec in YAML
+swagger: '2.0'
+info:
+  title: CS Blogs API
+  description: Open access to CS Blogs data
+  version: "0.0.1"
+# the domain of the service
+host: api.beta.csblogs.com
+# array of all schemes that your API supports
+schemes:
+  - https
+# will be prefixed to all paths
+basePath: /v2.0
+produces:
+  - application/json
+paths:
+  /users:
+    get:
+      summary: List of Users
+      description: |
+        The Users endpoint provides information about *verified* CS Blogs users. Including links to their websites, social media and blog.
+      parameters:
+        - name: page
+          in: query
+          description: Page number if using paginated queries
+          required: false
+          type: number
+          format: integer
+        - name: page_size
+          in: query
+          description: Page size if using paginated queries and dont want to use default
+          required: false
+          type: number
+          format: integer
+      responses:
+        200:
+          description: An array of users
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+        500:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  User:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Unique identifier representing a specific user
+      authenticationId: 
+        type: string
+        description: The identifier used by the authentication service for this user 
+      authenticationProvider: 
+        type: string
+        enum: [github, stack_exchange, wordpress]
+        description: Which of the supported OAuth providers to user uses to authenticate themselves
+      firstName:
+        type: string
+      lastName:
+        type: string
+      profilePicture:
+        type: string
+      bio:
+        type: string
+        description: A short description of the user in their own words
+      websiteURI:
+        type: string
+      blogURI:
+        type: string
+      blogFeedURI:
+        type: string
+      cvURI:
+        type: string
+      linkedInURI:
+        type: string
+      githubUsername:
+        type: string
+      twitterUsername:
+        type: string
+      
+  Error:
+    type: object
+    properties:
+      error:
+        type: string
+        description: A message explaining what went wrong
+      documentation:
+        type: string
+        description: A link to relevant documentation for the error
