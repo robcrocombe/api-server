@@ -3,7 +3,7 @@ import * as users from '../controllers/user-controller';
 
 const router = express.Router(); // eslint-disable-line new-cap
 
-router.get('/', (req, res) => {
+function respondGetAll(res) {
   users.getAll()
     .then(allUsers => {
       res.json(allUsers);
@@ -11,6 +11,28 @@ router.get('/', (req, res) => {
     .catch(() => {
       res.status(500).json({ error: 'Could not get list of users' });
     });
+}
+
+const DEFAULT_PAGE_SIZE = 10;
+function respondGetPage(res, pageNumber, pageSize) {
+  users.getPage(pageNumber, pageSize || DEFAULT_PAGE_SIZE)
+    .then(pageOfUsers => {
+      res.json(pageOfUsers);
+    })
+    .catch(() => {
+      res.status(500).json({ error: 'Could not get page of users' });
+    });
+}
+
+router.get('/', (req, res) => {
+  const pageNumber = req.query.page;
+  const pageSize = req.query.page_size;
+
+  if (pageNumber) {
+    respondGetPage(res, pageNumber, pageSize);
+  } else {
+    respondGetAll(res);
+  }
 });
 
 router.get('/:id', (req, res) => {

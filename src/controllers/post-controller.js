@@ -11,6 +11,9 @@ function removeNonPublicAttributes(post) {
 export function getAll() {
   return new Promise((resolve, reject) => {
     BlogPost.findAll({
+      order: [
+        ['date_published', 'DESC']
+      ],
       raw: true
     }).then(allPosts => {
       const apiSafePosts = allPosts.map(post => removeNonPublicAttributes(post));
@@ -31,6 +34,24 @@ export function getById(id) {
       post ? resolve(removeNonPublicAttributes(post)) : resolve(null);
     }).catch(error => {
       log.error({ error }, 'Error getting blog post by id');
+      reject(error);
+    });
+  });
+}
+
+export function getPage(pageNumber, pageSize) {
+  return new Promise((resolve, reject) => {
+    BlogPost.findAll({
+      order: [
+        ['date_published', 'DESC']
+      ],
+      offset: pageNumber * pageSize,
+      limit: pageSize,
+      raw: true
+    }).then(pageOfPosts => {
+      resolve(pageOfPosts);
+    }).catch(error => {
+      log.error({ error }, 'Error getting page of posts');
       reject(error);
     });
   });

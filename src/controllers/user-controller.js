@@ -14,6 +14,9 @@ function removeNonPublicAttributes(user) {
 export function getAll() {
   return new Promise((resolve, reject) => {
     User.findAll({
+      order: [
+        ['first_name', 'ASC']
+      ],
       where: { verified: true },
       raw: true
     })
@@ -45,4 +48,27 @@ export function getById(id) {
         reject(error);
       })
   );
+}
+
+export function getPage(pageNumber, pageSize) {
+  return new Promise((resolve, reject) => {
+    User.findAll({
+      order: [
+        ['first_name', 'ASC']
+      ],
+      where: {
+        verified: true
+      },
+      offset: pageNumber * pageSize,
+      limit: pageSize,
+      raw: true
+    })
+      .then(pageOfUsers => {
+        resolve(pageOfUsers);
+      })
+      .catch(error => {
+        log.error({ error }, 'Error getting page of users');
+        reject(error);
+      });
+  });
 }
