@@ -53,6 +53,9 @@ export function getById(id) {
 export function getPage(pageNumber, pageSize) {
   return new Promise((resolve, reject) => {
     User.findAll({
+      order: [
+        ['first_name', 'ASC']
+      ],
       where: {
         verified: true
       },
