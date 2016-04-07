@@ -8,6 +8,7 @@
   },
   "scripts": {
     "start": "npm run build-and-run | bunyan",
+    "start-production": "node ./app/server.js",
     "create-env": "cp .env.sample .env",
     "build-and-run": "npm run build && node -r ./app/set-env.js ./app/server.js",
     "build": "npm run build:js",
