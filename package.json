@@ -15,10 +15,8 @@
     "build:js": "rm -rf app/ && babel src/ -d app/",
     "lint": "eslint .",
     "test": "istanbul cover ./node_modules/.bin/_mocha -- --compilers js:babel-register --require tests/chai-config.js --recursive ./tests/**/*.tests.js",
-    "deploy": "npm run create-deployment-package && npm run upload-deployment-package && npm run delete-deployment-package",
-    "create-deployment-package": "npm run build && zip -r eb-deployment-package.zip . --exclude node_modules/\\* .git/\\* app/\\* test/\\* .env",
-    "upload-deployment-package": "",
-    "delete-deployment-package": "rm eb-deployment-package.zip"
+    "deploy": "npm run create-deployment-package",
+    "create-deployment-package": "npm run build && zip -r eb-deployment-package.zip . --exclude node_modules/\\* .git/\\* src/\\* test/\\* coverage/\\* .env"
   },
   "pre-commit": [
     "lint",
