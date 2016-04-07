@@ -64,7 +64,7 @@ export function getPage(pageNumber, pageSize) {
       raw: true
     })
       .then(pageOfUsers => {
-        resolve(pageOfUsers);
+        resolve(pageOfUsers.map(user => removeNonPublicAttributes(user)));
       })
       .catch(error => {
         log.error({ error }, 'Error getting page of users');
