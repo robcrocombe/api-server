@@ -11,8 +11,8 @@ database.sync()
     const app = express();
     app.use(requestLogger);
 
-    app.use('/users', userRoutes);
-    app.use('/posts', postRoutes);
+    app.use('/v2.0/users', userRoutes);
+    app.use('/v2.0/posts', postRoutes);
     app.use(notFoundRoute);
 
     const port = process.env.PORT;
