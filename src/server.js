@@ -15,7 +15,7 @@ database.sync()
     app.use('/posts', postRoutes);
     app.use(notFoundRoute);
 
-    const port = process.env.CSBLOGS_API_PORT;
+    const port = process.env.PORT;
 
     app.listen(port, () => {
       log.info({ port }, 'CSBlogs API now running');
