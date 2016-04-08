@@ -49,7 +49,7 @@ export function getPage(pageNumber, pageSize) {
       limit: pageSize,
       raw: true
     }).then(pageOfPosts => {
-      resolve(pageOfPosts);
+      resolve(pageOfPosts.map(post => removeNonPublicAttributes(post)));
     }).catch(error => {
       log.error({ error }, 'Error getting page of posts');
       reject(error);
