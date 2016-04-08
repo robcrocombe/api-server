@@ -46,6 +46,12 @@ export default database.define('user', {
     field: 'profile_picture',
     allowNull: false
   },
+  vanityName: {
+    type: Sequelize.STRING,
+    field: 'vanity_name',
+    allowNull: false,
+    unique: true
+  },
   bio: {
     type: Sequelize.TEXT,
     field: 'bio',
