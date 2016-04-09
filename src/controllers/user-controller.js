@@ -1,29 +1,37 @@
 import User from '../database/models/user';
 import log from '../log';
 
-function removeNonPublicAttributes(user) {
-  const apiSafeUser = user;
-  delete apiSafeUser.emailAddress;
-  delete apiSafeUser.createdAt;
-  delete apiSafeUser.updatedAt;
-  delete apiSafeUser.verified;
-  delete apiSafeUser.feedLastModified;
-  return apiSafeUser;
-}
+const PUBLIC_API_ATTRIBUTES = [
+  'id',
+  'authentication_id',
+  'authentication_provider',
+  'first_name',
+  'last_name',
+  'profile_picture',
+  'vanity_name',
+  'bio',
+  'website_uri',
+  'blog_uri',
+  'blog_feed_uri',
+  'cv_uri',
+  'linkedin_uri',
+  'github_username',
+  'twitter_username'
+];
+
+const DEFAULT_ORDER = [
+  ['first_name', 'ASC']
+];
 
 export function getAll() {
   return new Promise((resolve, reject) => {
     User.findAll({
-      order: [
-        ['first_name', 'ASC']
-      ],
+      attributes: PUBLIC_API_ATTRIBUTES,
+      order: DEFAULT_ORDER,
       where: { verified: true },
       raw: true
     })
-      .then(allUsers => {
-        const apiSafeUsers = allUsers.map(user => removeNonPublicAttributes(user));
-        resolve(apiSafeUsers);
-      })
+      .then(resolve)
       .catch(error => {
         log.error({ error }, 'Error getting list of all users');
         reject(error);
@@ -34,15 +42,14 @@ export function getAll() {
 export function getById(id) {
   return new Promise((resolve, reject) =>
     User.findOne({
+      attributes: PUBLIC_API_ATTRIBUTES,
       where: {
         id,
         verified: true
       },
       raw: true
     })
-      .then(user => {
-        user ? resolve(removeNonPublicAttributes(user)) : resolve(null);
-      })
+      .then(resolve)
       .catch(error => {
         log.error({ error, id }, 'Error getting user by id');
         reject(error);
@@ -53,9 +60,8 @@ export function getById(id) {
 export function getPage(pageNumber, pageSize) {
   return new Promise((resolve, reject) => {
     User.findAll({
-      order: [
-        ['first_name', 'ASC']
-      ],
+      attributes: PUBLIC_API_ATTRIBUTES,
+      order: DEFAULT_ORDER,
       where: {
         verified: true
       },
@@ -63,9 +69,7 @@ export function getPage(pageNumber, pageSize) {
       limit: pageSize,
       raw: true
     })
-      .then(pageOfUsers => {
-        resolve(pageOfUsers.map(user => removeNonPublicAttributes(user)));
-      })
+      .then(resolve)
       .catch(error => {
         log.error({ error }, 'Error getting page of users');
         reject(error);
