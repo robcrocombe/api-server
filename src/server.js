@@ -25,7 +25,7 @@ database.sync()
       approveRegistration: (hostname, callback) => {
         callback(null, {
           domains: [hostname],
-          email: process.env.LETS_ENCRYPT_EMAIL_ADDRESS,
+          email: process.env.CSBLOGS_LETS_ENCRYPT_EMAIL_ADDRESS,
           agreeTos: true
         });
       }
