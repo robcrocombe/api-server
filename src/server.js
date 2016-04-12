@@ -1,4 +1,5 @@
 import express from 'express';
+import configureHelmet from './security/configure-helmet';
 import database from './database';
 import log from './log';
 import requestLogger from './log/request-logger';
@@ -9,6 +10,7 @@ import notFoundRoute from './routes/not-found';
 database.sync()
   .then(() => {
     const app = express();
+    configureHelmet(app);
     app.use(requestLogger);
 
     app.use('/v2.0/users', userRoutes);
