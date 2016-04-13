@@ -1,6 +1,4 @@
 import express from 'express';
-import LEX from 'letsencrypt-express';
-
 import configureHelmet from './security/configure-helmet';
 import database from './database';
 import log from './log';
@@ -19,24 +17,9 @@ database.sync()
     app.use('/v2.0/posts', postRoutes);
     app.use(notFoundRoute);
 
-    const lex = LEX.create({
-      approveRegistration: (hostname, callback) => {
-        callback(null, {
-          domains: [hostname],
-          email: process.env.CSBLOGS_LETS_ENCRYPT_EMAIL_ADDRESS,
-          agreeTos: true
-        });
-      }
-    });
-
     const port = process.env.PORT;
 
-    lex.onRequest = app;
-    lex.listen([], [port], function onListen() {
-      const protocol = ('requestCert' in this) ? 'https' : 'http';
-      const address = this.address();
-      log.info({
-        address: `${protocol}://${address.address === '::' ? 'localhost' : address.address}:${address.port}`
-      }, 'CSBlogs API Server now running');
+    app.listen(port, () => {
+      log.info({ port }, 'CSBlogs API now running');
     });
   });
