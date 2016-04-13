@@ -57,6 +57,24 @@ export function getById(id) {
   );
 }
 
+export function getByVanityName(vanityName) {
+  return new Promise((resolve, reject) => {
+    User.findOne({
+      attributes: PUBLIC_API_ATTRIBUTES,
+      where: {
+        vanityName,
+        verified: true
+      },
+      raw: true
+    })
+      .then(resolve)
+      .catch(error => {
+        log.error({ error, vanityName }, 'Error getting user by vanity name');
+        reject(error);
+      });
+  });
+}
+
 export function getPage(pageNumber, pageSize) {
   return new Promise((resolve, reject) => {
     User.findAll({

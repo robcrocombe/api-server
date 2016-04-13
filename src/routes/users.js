@@ -24,12 +24,26 @@ function respondGetPage(res, pageNumber, pageSize) {
     });
 }
 
+function respondGetByVanity(res, vanityName) {
+  users.getByVanityName(vanityName)
+    .then(user => {
+      user ? res.json(user) : res.status(404).json({ error: 'No such user' });
+    })
+    .catch(() => {
+      res.status(500).json({ error: 'Could not get user' });
+    });
+}
+
 router.get('/', (req, res) => {
   const pageNumber = req.query.page;
   const pageSize = req.query.page_size;
 
+  const vanityName = req.query.vanity_name;
+
   if (pageNumber) {
     respondGetPage(res, pageNumber, pageSize);
+  } else if (vanityName) {
+    respondGetByVanity(res, vanityName);
   } else {
     respondGetAll(res);
   }
