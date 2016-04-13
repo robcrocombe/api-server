@@ -19,8 +19,6 @@ database.sync()
     app.use('/v2.0/posts', postRoutes);
     app.use(notFoundRoute);
 
-    const port = process.env.PORT;
-
     const lex = LEX.create({
       approveRegistration: (hostname, callback) => {
         callback(null, {
@@ -30,6 +28,8 @@ database.sync()
         });
       }
     });
+
+    const port = process.env.PORT;
 
     lex.onRequest = app;
     lex.listen([], [port], function onListen() {
