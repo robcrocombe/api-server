@@ -1,18 +1,15 @@
 import passport from 'passport';
 import { BasicStrategy } from 'passport-http';
 import log from '../../log';
-import getGithubUser from './get-github-user';
-import getStackExchangeUser from './get-stack-exchange-user';
-import getWordpressUser from './get-wordpress-user';
 
-function getUserFromService(service, accessToken) {
-  switch (service) {
+function getUserFromService(authenticationProvider, accessToken) {
+  switch (authenticationProvider) {
     case 'github':
-      return getGithubUser(accessToken);
-    case 'stack_exchange':
-      return getStackExchangeUser(accessToken);
-    case 'wordpress':
-      return getWordpressUser(accessToken);
+      return Promise.resolve({ firstName: 'Danny' });
+    // case 'stack_exchange':
+    //   return getStackExchangeUser(accessToken);
+    // case 'wordpress':
+    //   return getWordpressUser(accessToken);
     default:
       return Promise.reject(new Error('Invalid authentication provider (username)'));
   }
@@ -33,4 +30,4 @@ export function configureAuthentication() {
   }));
 }
 
-export const authenticatedOnly = passport.authenticate('basic', { session: false });
+export const serviceAuthenticatedOnly = passport.authenticate('basic', { session: false });
