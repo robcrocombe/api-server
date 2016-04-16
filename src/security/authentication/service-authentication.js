@@ -1,25 +1,36 @@
 import passport from 'passport';
 import { BasicStrategy } from 'passport-http';
+import log from '../../log';
+import getGithubUser from './get-github-user';
+import getStackExchangeUser from './get-stack-exchange-user';
+import getWordpressUser from './get-wordpress-user';
 
-function validateOAuth(service, accessToken) {
-  return new Promise((resolve, reject) => {
-    switch (service) {
-      case 'github':
-        break;
-      case 'stack_exchange':
-        break;
-      case 'wordpress':
-        break;
-      default:
-        reject(new Error('Invalid authentication provider (username)'));
-    }
-  });
+function getUserFromService(service, accessToken) {
+  switch (service) {
+    case 'github':
+      return getGithubUser(accessToken);
+    case 'stack_exchange':
+      return getStackExchangeUser(accessToken);
+    case 'wordpress':
+      return getWordpressUser(accessToken);
+    default:
+      return Promise.reject(new Error('Invalid authentication provider (username)'));
+  }
 }
 
-passport.use(new BasicStrategy((username, password, done) => {
-  validateOAuth(username, password)
-    .then(user => {
-      user ? done(null, user) : done(null, false);
-    })
-    .catch(error => done(error));
-}));
+export function configureAuthentication() {
+  passport.use(new BasicStrategy((username, password, done) => {
+    log.info({ service: username, accessToken: password }, 'Authenticating');
+
+    getUserFromService(username, password)
+      .then(user => {
+        user ? done(null, user) : done(null, false);
+      })
+      .catch(error => {
+        log.error({ error: error.message }, 'Error authenticating user');
+        done(error);
+      });
+  }));
+}
+
+export const authenticatedOnly = passport.authenticate('basic', { session: false });

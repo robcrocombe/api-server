@@ -1,5 +1,6 @@
 import express from 'express';
 import * as users from '../controllers/user-controller';
+import { authenticatedOnly } from '../security/authentication/service-authentication';
 
 const router = express.Router(); // eslint-disable-line new-cap
 
@@ -58,6 +59,10 @@ router.get('/:id', (req, res) => {
     .catch(() => {
       res.status(500).json({ error: 'Could not get user' });
     });
+});
+
+router.post('/', authenticatedOnly, (req, res) => {
+  res.json({ authenticated: 'true' });
 });
 
 export default router;
