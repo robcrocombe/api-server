@@ -6,6 +6,7 @@ import log from './log';
 import requestLogger from './log/request-logger';
 import userRoutes from './routes/users';
 import postRoutes from './routes/posts';
+import authenticationRoutes from './routes/authentication';
 import notFoundRoute from './routes/not-found';
 
 database.sync()
@@ -18,6 +19,7 @@ database.sync()
 
     app.use('/v2.0/users', userRoutes);
     app.use('/v2.0/posts', postRoutes);
+    app.use('/v2.0/authentication', authenticationRoutes);
     app.use(notFoundRoute);
 
     const port = process.env.PORT;

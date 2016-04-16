@@ -50,6 +50,10 @@ router.get('/', (req, res) => {
   }
 });
 
+// router.get('/me', authenticatedOnly, (req, res) => {
+  
+// });
+
 router.get('/:id', (req, res) => {
   const id = req.params.id;
   users.getById(id)
@@ -59,10 +63,6 @@ router.get('/:id', (req, res) => {
     .catch(() => {
       res.status(500).json({ error: 'Could not get user' });
     });
-});
-
-router.post('/', authenticatedOnly, (req, res) => {
-  res.json({ authenticated: 'true' });
 });
 
 export default router;
