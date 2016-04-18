@@ -20,6 +20,11 @@ const blogPostDatabaseDefinition = database.define('blog_post', {
     field: 'link',
     allowNull: false
   },
+  imageURI: {
+    type: Sequelize.STRING,
+    field: 'image_uri',
+    allowNull: true
+  },
   description: {
     type: Sequelize.TEXT,
     field: 'description',
