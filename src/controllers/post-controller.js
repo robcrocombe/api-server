@@ -7,7 +7,8 @@ const PUBLIC_API_ATTRIBUTES = [
   'link',
   'description',
   'date_updated',
-  'date_published'
+  'date_published',
+  'author_id'
 ];
 
 const DEFAULT_ORDER = [
