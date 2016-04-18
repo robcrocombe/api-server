@@ -34,7 +34,9 @@ const blogPostDatabaseDefinition = database.define('blog_post', {
     type: Sequelize.DATE,
     field: 'date_published',
     allowNull: false
-  }
+  },
+}, {
+  underscored: true
 });
 
 blogPostDatabaseDefinition.belongsTo(User, { as: 'author' });
