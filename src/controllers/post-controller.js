@@ -5,6 +5,7 @@ const PUBLIC_API_ATTRIBUTES = [
   'id',
   'title',
   'link',
+  'image_uri',
   'description',
   'date_updated',
   'date_published',
