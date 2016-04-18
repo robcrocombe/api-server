@@ -41,9 +41,9 @@ export default database.define('user', {
     field: 'email_address',
     allowNull: false
   },
-  profilePicture: {
+  profilePictureURI: {
     type: Sequelize.STRING,
-    field: 'profile_picture',
+    field: 'profile_picture_uri',
     allowNull: false
   },
   vanityName: {

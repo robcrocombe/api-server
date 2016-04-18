@@ -7,7 +7,7 @@ const PUBLIC_API_ATTRIBUTES = [
   'authentication_provider',
   'first_name',
   'last_name',
-  'profile_picture',
+  'profile_picture_uri',
   'vanity_name',
   'bio',
   'website_uri',
