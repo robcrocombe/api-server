@@ -44,6 +44,6 @@ const blogPostDatabaseDefinition = database.define('blog_post', {
   underscored: true
 });
 
-blogPostDatabaseDefinition.belongsTo(User, { as: 'author' });
+blogPostDatabaseDefinition.belongsTo(User, { as: 'author', foreignKey: { name: 'author_id', allowNull: false } });
 
 export default blogPostDatabaseDefinition;
