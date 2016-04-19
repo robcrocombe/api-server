@@ -62,3 +62,41 @@ export function getPage(pageNumber, pageSize) {
       });
   });
 }
+
+export function getByAuthor(authorId) {
+  return new Promise((resolve, reject) => {
+    BlogPost.findAll({
+      attributes: PUBLIC_API_ATTRIBUTES,
+      order: DEFAULT_ORDER,
+      where: {
+        author_id: authorId
+      },
+      raw: true
+    })
+      .then(resolve)
+      .catch(error => {
+        log.error({ error }, 'Error getting authors posts');
+        reject(error);
+      });
+  });
+}
+
+export function getByAuthorPage(authorId, pageNumber, pageSize) {
+  return new Promise((resolve, reject) => {
+    BlogPost.findAll({
+      attributes: PUBLIC_API_ATTRIBUTES,
+      order: DEFAULT_ORDER,
+      offset: pageNumber * pageSize,
+      limit: pageSize,
+      where: {
+        author_id: authorId
+      },
+      raw: true
+    })
+      .then(resolve)
+      .catch(error => {
+        log.error({ error }, 'Error getting page of author posts');
+        reject(error);
+      });
+  });
+}
