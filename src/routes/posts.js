@@ -13,6 +13,16 @@ function respondGetAll(res) {
     });
 }
 
+function respondGetAllByAuthor(res, authorId) {
+  posts.getByAuthor(authorId)
+    .then(allPostsByAuthor => {
+      res.json(allPostsByAuthor);
+    })
+    .catch(() => {
+      res.status(500).json({ error: 'Could not get list of posts by author' });
+    });
+}
+
 const DEFAULT_PAGE_SIZE = 10;
 function respondGetPage(res, pageNumber, pageSize) {
   posts.getPage(pageNumber, pageSize || DEFAULT_PAGE_SIZE)
@@ -24,11 +34,27 @@ function respondGetPage(res, pageNumber, pageSize) {
     });
 }
 
+function respondGetAuthorPage(res, authorId, pageNumber, pageSize) {
+  posts.getByAuthorPage(authorId, pageNumber, pageSize)
+    .then(pageOfPosts => {
+      res.json(pageOfPosts);
+    })
+    .catch(() => {
+      res.status(500).json({ error: 'Could not get page of authors posts' });
+    });
+}
+
 router.get('/', (req, res) => {
   const pageNumber = req.query.page;
   const pageSize = req.query.page_size;
 
-  if (pageNumber) {
+  const authorId = req.query.author_id;
+
+  if (authorId && pageNumber) {
+    respondGetAuthorPage(res, authorId, pageNumber, pageSize);
+  } else if (authorId) {
+    respondGetAllByAuthor(res, authorId);
+  } else if (pageNumber) {
     respondGetPage(res, pageNumber, pageSize);
   } else {
     respondGetAll(res);
