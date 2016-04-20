@@ -39,6 +39,24 @@ export function getAll() {
   });
 }
 
+export function getManyByIds(ids) {
+  return new Promise((resolve, reject) => {
+    User.findAll({
+      attributes: PUBLIC_API_ATTRIBUTES,
+      where: {
+        id: ids, // Sequelize automatically does 'in'
+        verified: true
+      },
+      raw: true
+    })
+      .then(resolve)
+      .catch(error => {
+        log.error({ error, ids }, 'Error getting many users by id');
+        reject(error);
+      });
+  });
+}
+
 export function getById(id) {
   return new Promise((resolve, reject) => {
     User.findOne({
