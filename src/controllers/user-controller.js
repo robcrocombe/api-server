@@ -40,7 +40,7 @@ export function getAll() {
 }
 
 export function getById(id) {
-  return new Promise((resolve, reject) =>
+  return new Promise((resolve, reject) => {
     User.findOne({
       attributes: PUBLIC_API_ATTRIBUTES,
       where: {
@@ -53,8 +53,8 @@ export function getById(id) {
       .catch(error => {
         log.error({ error, id }, 'Error getting user by id');
         reject(error);
-      })
-  );
+      });
+  });
 }
 
 export function getByVanityName(vanityName) {
