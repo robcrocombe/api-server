@@ -34,16 +34,30 @@ function respondGetByVanity(res, vanityName) {
     });
 }
 
+function respondGetMany(res, manyIds) {
+  const ids = manyIds.split(',');
+  users.getManyByIds(ids)
+    .then(manyUsers => {
+      res.json(manyUsers);
+    })
+    .catch(() => {
+      res.status(500).json({ error: 'Could not get list of users' });
+    });
+}
+
 router.get('/', (req, res) => {
   const pageNumber = req.query.page;
   const pageSize = req.query.page_size;
 
   const vanityName = req.query.vanity_name;
+  const manyIds = req.query.ids;
 
-  if (pageNumber) {
-    respondGetPage(res, pageNumber, pageSize);
-  } else if (vanityName) {
+  if (vanityName) {
     respondGetByVanity(res, vanityName);
+  } else if (manyIds) {
+    respondGetMany(res, manyIds);
+  } else if (pageNumber) {
+    respondGetPage(res, pageNumber, pageSize);
   } else {
     respondGetAll(res);
   }
