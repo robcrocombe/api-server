@@ -59,7 +59,7 @@ export function getManyByIds(ids) {
           unfoundIds.forEach(id => {
             allUsers.push({
               id,
-              error: 'No such user'
+              error: 'User not found'
             });
           });
         }
