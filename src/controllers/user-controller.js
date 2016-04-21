@@ -49,7 +49,23 @@ export function getManyByIds(ids) {
       },
       raw: true
     })
-      .then(resolve)
+      .then(foundUsers => {
+        const allUsers = foundUsers;
+
+        if (allUsers.length !== ids.length) {
+          // One or more of requested users doesn't exist. Add error to result
+          const foundIds = foundUsers.map(user => user.id);
+          const unfoundIds = ids.filter(id => !foundIds.includes(id));
+          unfoundIds.forEach(id => {
+            allUsers.push({
+              id,
+              error: 'No such user'
+            });
+          });
+        }
+
+        resolve(allUsers);
+      })
       .catch(error => {
         log.error({ error, ids }, 'Error getting many users by id');
         reject(error);
