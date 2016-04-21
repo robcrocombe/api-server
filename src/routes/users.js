@@ -35,7 +35,7 @@ function respondGetByVanity(res, vanityName) {
 }
 
 function respondGetMany(res, manyIds) {
-  const ids = manyIds.split(',');
+  const ids = manyIds.split(',').map(id => Number(id));
   users.getManyByIds(ids)
     .then(manyUsers => {
       res.json(manyUsers);
