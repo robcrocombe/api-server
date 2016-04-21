@@ -64,7 +64,12 @@ export function getManyByIds(ids) {
           });
         }
 
-        resolve(allUsers);
+        const usersHash = { };
+        allUsers.forEach(user => {
+          usersHash[user.id] = user;
+        });
+
+        resolve(usersHash);
       })
       .catch(error => {
         log.error({ error, ids }, 'Error getting many users by id');
