@@ -27,7 +27,7 @@ function respondGetPage(res, pageNumber, pageSize) {
 function respondGetByVanity(res, vanityName) {
   users.getByVanityName(vanityName)
     .then(user => {
-      user ? res.json(user) : res.status(404).json({ error: 'No such user' });
+      user ? res.json(user) : res.status(404).json({ error: 'User not found' });
     })
     .catch(() => {
       res.status(500).json({ error: 'Could not get user' });
