@@ -1,3 +1,6 @@
+import passport from 'passport';
+import CustomStrategy from 'passport-custom';
+
 import uuid from 'node-uuid';
 import moment from 'moment';
 import accessToken from '../../database/models/access-token';
@@ -16,3 +19,32 @@ export function generateTokenForUser(user) {
       });
   });
 }
+
+passport.use('csb-token', new CustomStrategy(
+  (req, done) => {
+    const httpAuthorizationToken = req.get('Authorization');
+    accessToken.findOne({
+      where: {
+        token: httpAuthorizationToken,
+        dateExpires: {
+          $gt: new Date()
+        }
+      }
+    })
+      .then(token => {
+        if (token) {
+          return token.getUser();
+        }
+        log.error({ httpAuthorizationToken }, 'Request was made with a token that doesn\'t exist or is expired');
+        return done(new Error('Invalid token'));
+      })
+      .then(user => {
+        log.info({ user }, 'User successfully authenticated');
+        done(null, user);
+      })
+      .catch(error => {
+        log.error({ error }, 'Error retrieving a token from database');
+        done(new Error('Error retrieving token'));
+      });
+  }
+));
