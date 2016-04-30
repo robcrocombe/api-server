@@ -23,7 +23,12 @@ export function generateTokenForUser(user) {
 passport.use('csb-token', new CustomStrategy(
   (req, done) => {
     const httpAuthorizationToken = req.get('Authorization');
-    accessToken.findOne({
+    if (!httpAuthorizationToken) {
+      log.error('Request requiring token auth made with no token supplied');
+      return done(new Error('No token supplied'));
+    }
+
+    return accessToken.findOne({
       where: {
         token: httpAuthorizationToken,
         dateExpires: {
@@ -39,8 +44,10 @@ passport.use('csb-token', new CustomStrategy(
         return done(new Error('Invalid token'));
       })
       .then(user => {
-        log.info({ user }, 'User successfully authenticated');
-        done(null, user);
+        if (user) {
+          log.info({ user }, 'User successfully authenticated');
+          done(null, user);
+        }
       })
       .catch(error => {
         log.error({ error }, 'Error retrieving a token from database');
@@ -48,3 +55,5 @@ passport.use('csb-token', new CustomStrategy(
       });
   }
 ));
+
+export const csbTokenAuthenticatedOnly = passport.authenticate('csb-token', { session: false });

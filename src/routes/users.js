@@ -1,6 +1,6 @@
 import express from 'express';
 import * as users from '../controllers/user-controller';
-import { authenticatedOnly } from '../security/authentication/service-authentication';
+import { csbTokenAuthenticatedOnly } from '../security/authentication/csb-token-authentication';
 
 const router = express.Router(); // eslint-disable-line new-cap
 
@@ -64,9 +64,9 @@ router.get('/', (req, res) => {
   }
 });
 
-// router.get('/me', authenticatedOnly, (req, res) => {
-  
-// });
+router.get('/me', csbTokenAuthenticatedOnly, (req, res) => {
+  res.json(req.user);
+});
 
 router.get('/:id', (req, res) => {
   const id = req.params.id;
