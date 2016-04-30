@@ -16,38 +16,44 @@ function getUserInformationFromGithub(accessToken) {
         const githubUser = JSON.parse(body);
         resolve({ authentication_id: githubUser.id.toString(), authentication_provider: 'github' });
       } else {
-        reject(error || `Non-OK response from Github (${response.statusCode})`);
+        reject(error || `Non-OK response from Github (${response.statusCode}) ${body}`);
       }
     });
   });
 }
 
 function getUserInformationFromWordpress(accessToken) {
-  // TODO: Test and fix
   return new Promise((resolve, reject) => {
     request({
       url: 'https://public-api.wordpress.com/rest/v1.1/me',
       headers: {
-        authorization: `Bearer ${accessToken}`
+        authorization: `Bearer ${accessToken}`,
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
       }
     }, (error, response, body) => {
       if (!error && response.statusCode === 200) {
-        resolve({ authentication_id: body.ID, authentication_provider: 'wordpress' });
+        const wordpressUser = JSON.parse(body);
+        resolve({ authentication_id: wordpressUser.ID, authentication_provider: 'wordpress' });
       } else {
-        reject(error || 'Non-OK response from Wordpress');
+        reject(error || `Non-OK response from Wordpress (${response.statusCode}) ${body}`);
       }
     });
   });
 }
 
 function getUserInformationFromStackExchange(accessToken) {
-  // TODO: Test and fix
   return new Promise((resolve, reject) => {
-    request(`https://api.stackexchange.com/2.2/me/&access_token=${accessToken}`, (error, response, body) => {
+    request({
+      url: `https://api.stackexchange.com/2.2/me/&access_token=${accessToken}`,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36'
+      }
+    }, (error, response, body) => {
       if (! error && response.statusCode === 200) {
-        resolve({ authentication_id: body.items[0].user_id, authentication_provider: 'stack_exchange' });
+        const stackExchangeResponseObject = JSON.parse(body);
+        resolve({ authentication_id: stackExchangeResponseObject.items[0].user_id, authentication_provider: 'stack_exchange' });
       } else {
-        reject(error || 'Non-OK response from Stack Exchange');
+        reject(error || `Non-OK response from Stack Exchange (${response.statusCode}) ${body}`);
       }
     });
   });
