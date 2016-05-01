@@ -5,6 +5,7 @@ import uuid from 'node-uuid';
 import moment from 'moment';
 import accessToken from '../../database/models/access-token';
 import log from '../../log';
+import * as userController from '../../controllers/user-controller';
 
 export function generateTokenForUser(userId) {
   return new Promise((resolve, reject) => {
@@ -38,7 +39,7 @@ passport.use('csb-token', new CustomStrategy(
     })
       .then(token => {
         if (token) {
-          return token.getUser();
+          return userController.getById(token.user_id);
         }
         log.error({ httpAuthorizationToken }, 'Request was made with a token that doesn\'t exist or is expired');
         return done(new Error('Invalid token'));
