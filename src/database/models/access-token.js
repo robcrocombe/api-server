@@ -16,6 +16,6 @@ const accessTokenDatabaseDefinition = database.define('access_token', {
   }
 });
 
-accessTokenDatabaseDefinition.belongsTo(User, { as: 'user' });
+accessTokenDatabaseDefinition.belongsTo(User, { as: 'user', foreignKey: { name: 'user_id', allowNull: false } });
 
 export default accessTokenDatabaseDefinition;
