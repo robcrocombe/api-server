@@ -51,7 +51,7 @@ passport.use('csb-token', new CustomStrategy(
         }
       })
       .catch(error => {
-        log.error({ error }, 'Error retrieving a token from database');
+        log.error({ error: error.message }, 'Error retrieving a token from database');
         done(new Error('Error retrieving token'));
       });
   }
