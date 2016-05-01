@@ -5,7 +5,7 @@ import { generateTokenForUser } from '../security/authentication/csb-token-authe
 const router = express.Router(); // eslint-disable-line new-cap
 
 router.get('/token', serviceAuthenticatedOnly, (req, res) => {
-  generateTokenForUser(req.user)
+  generateTokenForUser(req.user.id)
     .then(({ token, expires }) => {
       res.json({
         token,
