@@ -6,7 +6,8 @@ export default function requestLogger(req, res, next) {
     protocol: req.protocol,
     secure: req.secure,
     method: req.method,
-    url: req.originalUrl
+    url: req.originalUrl,
+    body: req.body
   }, 'Request received');
   next();
 }
