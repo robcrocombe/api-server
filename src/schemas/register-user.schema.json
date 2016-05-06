@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "additionalProperties": false,
+  "title": "User",
+  "type": "object",
+  "properties": {
+    "authenticationId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "authenticationProvider": {
+      "enum": [
+        "github",
+        "stack_exchange",
+        "wordpress"
+      ]
+    },
+    "firstName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "lastName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255
+    },
+    "emailAddress": {
+      "type": "string",
+      "format": "email"
+    },
+    "profilePictureURI": {
+      "type": "string",
+      "format": "uri"
+    },
+    "vanityName": {
+      "type": "string",
+      "maxLength": 20,
+      "minLength": 3
+    },
+    "bio": {
+      "type": "string",
+      "minLength": 80,
+      "maxLength": 350
+    },
+    "websiteURI": {
+      "type": "string",
+      "format": "uri"
+    },
+    "blogURI": {
+      "type": "string",
+      "format": "uri"
+    },
+    "blogFeedURI": {
+      "type": "string",
+      "format": "uri"
+    },
+    "cvURI": {
+      "type": "string",
+      "format": "uri"
+    },
+    "linkedInURI": {
+      "type": "string",
+      "format": "uri"
+    },
+    "githubUsername": {
+      "type": "string",
+      "pattern": "^\\w[\\w-]+$"
+    },
+    "twitterUsername": {
+      "type": "string",
+      "pattern": "^@?(\\w){1,15}$"
+    }
+  },
+  "required": [
+   "firstName",
+   "lastName",
+   "emailAddress",
+   "profilePictureURI",
+   "vanityName",
+   "bio",
+   "blogURI",
+   "blogFeedURI"
+  ]
+}
