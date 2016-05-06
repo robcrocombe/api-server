@@ -46,6 +46,17 @@ function respondGetMany(res, manyIds) {
     });
 }
 
+router.post('/', (req, res) => {
+  const user = req.body;
+  users.register(user)
+    .then(registeredUser => {
+      res.json(registeredUser);
+    })
+    .catch(() => {
+      res.status(500).json({ error: 'An error occured when registering' });
+    });
+});
+
 router.get('/', (req, res) => {
   const pageNumber = req.query.page;
   const pageSize = req.query.page_size;
