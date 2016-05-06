@@ -1,5 +1,7 @@
 import User from '../database/models/user';
 import log from '../log';
+import { Validator } from 'jsonschema';
+import registerUserSchema from '../schemas/register-user.schema.json';
 
 const PUBLIC_API_ATTRIBUTES = [
   'id',
@@ -131,5 +133,25 @@ export function getPage(pageNumber, pageSize) {
         log.error({ error }, 'Error getting page of users');
         reject(error);
       });
+  });
+}
+
+export function register(newUser) {
+  return new Promise((resolve, reject) => {
+    const validator = new Validator();
+    const validationResult = validator.validate(newUser, registerUserSchema);
+
+    if (validationResult.valid) {
+      User.create(newUser)
+      .then(() => resolve())
+      .catch(error => {
+        log.info({ newUser, error }, 'Error adding new user to database');
+        reject(error);
+      });
+    } else {
+      const error = new Error('Invalid new user');
+      error.validationProblems = validationResult.errors;
+      reject(error);
+    }
   });
 }
