@@ -24,8 +24,9 @@ function respondGetAllByAuthor(res, authorId) {
 }
 
 const DEFAULT_PAGE_SIZE = 10;
+const DEFAULT_PAGE_NUMBER = 0;
 function respondGetPage(res, pageNumber, pageSize) {
-  posts.getPage(pageNumber, pageSize || DEFAULT_PAGE_SIZE)
+  posts.getPage(pageNumber || DEFAULT_PAGE_NUMBER, pageSize || DEFAULT_PAGE_SIZE)
     .then(pageOfPosts => {
       res.json(pageOfPosts);
     })
@@ -54,7 +55,7 @@ router.get('/', (req, res) => {
     respondGetAuthorPage(res, authorId, pageNumber, pageSize);
   } else if (authorId) {
     respondGetAllByAuthor(res, authorId);
-  } else if (pageNumber) {
+  } else if (pageNumber || pageSize) {
     respondGetPage(res, pageNumber, pageSize);
   } else {
     respondGetAll(res);
