@@ -15,8 +15,9 @@ function respondGetAll(res) {
 }
 
 const DEFAULT_PAGE_SIZE = 10;
+const DEFAULT_PAGE_NUMBER = 0;
 function respondGetPage(res, pageNumber, pageSize) {
-  users.getPage(pageNumber, pageSize || DEFAULT_PAGE_SIZE)
+  users.getPage(pageNumber || DEFAULT_PAGE_NUMBER, pageSize || DEFAULT_PAGE_SIZE)
     .then(pageOfUsers => {
       res.json(pageOfUsers);
     })
@@ -57,7 +58,7 @@ router.get('/', (req, res) => {
     respondGetByVanity(res, vanityName);
   } else if (manyIds) {
     respondGetMany(res, manyIds);
-  } else if (pageNumber) {
+  } else if (pageNumber || pageSize) {
     respondGetPage(res, pageNumber, pageSize);
   } else {
     respondGetAll(res);
