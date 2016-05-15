@@ -2,6 +2,8 @@ import express from 'express';
 import * as posts from '../controllers/post-controller';
 
 const router = express.Router(); // eslint-disable-line new-cap
+const DEFAULT_PAGE_SIZE = 10;
+const DEFAULT_PAGE_NUMBER = 0;
 
 function respondGetAll(res) {
   posts.getAll()
@@ -23,12 +25,32 @@ function respondGetAllByAuthor(res, authorId) {
     });
 }
 
-const DEFAULT_PAGE_SIZE = 10;
-const DEFAULT_PAGE_NUMBER = 0;
 function respondGetPage(res, pageNumber, pageSize) {
-  posts.getPage(pageNumber || DEFAULT_PAGE_NUMBER, pageSize || DEFAULT_PAGE_SIZE)
+  const page = pageNumber || DEFAULT_PAGE_NUMBER;
+  const size = pageSize || DEFAULT_PAGE_SIZE;
+  const offset = page * size;
+
+  posts.getPage(offset, size)
     .then(pageOfPosts => {
       res.json(pageOfPosts);
+    })
+    .catch(() => {
+      res.status(500).json({ error: 'Could not get page of posts' });
+    });
+}
+
+function respondGetMergedAuthorsPage(res, startPos, pageSize, mergeLimit) {
+  const offset = parseInt(startPos, 10) || 0;
+  const size = parseInt(pageSize, 10) || DEFAULT_PAGE_SIZE;
+  const merge = parseInt(mergeLimit, 10);
+  const limit = size * 5;
+
+  posts.getPage(offset, limit)
+    .then(pageOfPosts => {
+      const mergedAuthorPosts = posts.mergeNeighbouringAuthors(pageOfPosts, size, merge);
+      mergedAuthorPosts.offset = offset + mergedAuthorPosts.count;
+
+      res.json(mergedAuthorPosts);
     })
     .catch(() => {
       res.status(500).json({ error: 'Could not get page of posts' });
@@ -48,10 +70,14 @@ function respondGetAuthorPage(res, authorId, pageNumber, pageSize) {
 router.get('/', (req, res) => {
   const pageNumber = req.query.page;
   const pageSize = req.query.page_size;
-
   const authorId = req.query.author_id;
+  const mergeAuthors = req.query.merge_authors;
+  const mergeLimit = req.query.merge_limit;
+  const offset = req.query.offset;
 
-  if (authorId && pageNumber) {
+  if (mergeAuthors === 'true') {
+    respondGetMergedAuthorsPage(res, offset, pageSize, mergeLimit);
+  } else if (authorId && pageNumber) {
     respondGetAuthorPage(res, authorId, pageNumber, pageSize);
   } else if (authorId) {
     respondGetAllByAuthor(res, authorId);
