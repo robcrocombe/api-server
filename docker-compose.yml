@@ -1,0 +1,14 @@
+version: '2.0'
+services:
+    csblogs-postgres: 
+        image: postgres
+        environment:
+           - POSTGRES_USER=csblogs
+           - POSTGRES_PASSWORD=
+    csblogs-api-server:
+        build: .
+        command: npm start
+        ports: 
+            - "3000:3000"
+        links:
+            - csblogs-postgres
