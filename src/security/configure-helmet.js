@@ -11,7 +11,7 @@ export default function configureHelmet(app) {
     includeSubDomains: true,
     preload: true
   }));
-  app.use(helmet.noCache({ noEtag: true }));
+  app.use(helmet.noCache());
   app.use(helmet.noSniff());
   app.use(helmet.ieNoOpen());
   app.use(helmet.xssFilter());
