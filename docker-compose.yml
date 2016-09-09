@@ -3,8 +3,8 @@ services:
     csblogs-postgres: 
         image: postgres
         environment:
-           - POSTGRES_USER=csblogs
-           - POSTGRES_PASSWORD=
+            - POSTGRES_USER=csblogs
+            - POSTGRES_PASSWORD=
     csblogs-api-server:
         build: .
         command: npm start
@@ -15,3 +15,12 @@ services:
             - csblogs-postgres
         depends_on:
             - csblogs-postgres
+        environment:
+            - PORT=3000
+            - CSBLOGS_DATABASE_NAME=
+            - CSBLOGS_DATABASE_USERNAME=
+            - CSBLOGS_DATABASE_PASSWORD=
+            - CSBLOGS_DATABASE_HOST=
+            - CSBLOGS_DATABASE_PORT=
+            - CSBLOGS_DATABASE_LOG_SQL_STATEMENTS=
+            - CSBLOGS_TOKEN_EXPIRY_IN_DAYS=
