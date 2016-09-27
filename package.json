@@ -14,7 +14,7 @@
     "build:js": "rm -rf app/ && babel src/ -d app/",
     "lint": "eslint .",
     "test": "istanbul cover ./node_modules/.bin/_mocha -- --compilers js:babel-register --require tests/chai-config.js --recursive ./tests/**/*.tests.js",
-    "deploy": "now --public -e CSBLOGS_DATABASE_NAME= -e CSBLOGS_DATABASE_USERNAME= -e CSBLOGS_DATABASE_PASSWORD= -e CSBLOGS_DATABASE_HOST= -e CSBLOGS_DATABASE_PORT= -e CSBLOGS_DATABASE_LOG_SQL_STATEMENTS= -e CSBLOGS_TOKEN_EXPIRY_IN_DAYS="
+    "deploy": "now --public -e CSBLOGS_DATABASE_NAME=\"\" -e CSBLOGS_DATABASE_USERNAME=\"\" -e CSBLOGS_DATABASE_PASSWORD=\"\" -e CSBLOGS_DATABASE_HOST=\"\" -e CSBLOGS_DATABASE_PORT=\"\" -e CSBLOGS_DATABASE_LOG_SQL_STATEMENTS=\"\" -e CSBLOGS_TOKEN_EXPIRY_IN_DAYS=\"\""
   },
   "pre-commit": [
     "lint",
