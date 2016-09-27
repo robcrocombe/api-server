@@ -1,5 +1,8 @@
 FROM node:latest
 
+MAINTAINER Daniel Brown <danny@csblogs.com>
+LABEL name="csblogs-api-server"
+
 RUN mkdir /usr/src/csblogs-api-server
 WORKDIR /usr/src/csblogs-api-server
 
