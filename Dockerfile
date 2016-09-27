@@ -11,3 +11,4 @@ COPY . /usr/src/csblogs-api-server
 EXPOSE 3000
 
 ENTRYPOINT [ "npm", "run" ];
+CMD ["start"]
