@@ -11,7 +11,7 @@ RUN npm install
 
 COPY . /usr/src/csblogs-api-server
 
-EXPOSE 3000
+EXPOSE 80
 
 ENTRYPOINT [ "npm", "run" ];
 CMD ["start"]
