@@ -14,7 +14,7 @@
     "build:js": "rm -rf app/ && babel src/ -d app/",
     "lint": "eslint .",
     "test": "istanbul cover ./node_modules/.bin/_mocha -- --compilers js:babel-register --require tests/chai-config.js --recursive ./tests/**/*.tests.js",
-    "deploy": "now --public -e CSBLOGS_DATABASE_NAME=\"\" -e CSBLOGS_DATABASE_USERNAME=\"\" -e CSBLOGS_DATABASE_PASSWORD=\"\" -e CSBLOGS_DATABASE_HOST=\"\" -e CSBLOGS_DATABASE_PORT=\"\" -e CSBLOGS_DATABASE_LOG_SQL_STATEMENTS=\"\" -e CSBLOGS_TOKEN_EXPIRY_IN_DAYS=\"\""
+    "deploy": "now --public --docker -e PORT=\"80\" -e CSBLOGS_DATABASE_NAME=\"hrtwlzmi\" -e CSBLOGS_DATABASE_USERNAME=\"hrtwlzmi\" -e CSBLOGS_DATABASE_PASSWORD=\"pFrTmnizuxDBH1iC9aZop7xzeMHEEUsq\" -e CSBLOGS_DATABASE_HOST=\"horton.elephantsql.com\" -e CSBLOGS_DATABASE_PORT=\"5432\" -e CSBLOGS_DATABASE_LOG_SQL_STATEMENTS=\"true\" -e CSBLOGS_TOKEN_EXPIRY_IN_DAYS=\"1\""
   },
   "pre-commit": [
     "lint",
