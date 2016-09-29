@@ -9,22 +9,39 @@ import postRoutes from './routes/posts';
 import authenticationRoutes from './routes/authentication';
 import notFoundRoute from './routes/not-found';
 
-database.sync()
-  .then(() => {
-    const app = express();
+function startServer() {
+  database.sync()
+    .then(() => {
+      log.info('Connected to Database Successfully');
 
-    configureHelmet(app);
-    configureAuthentication();
-    app.use(requestLogger);
+      const app = express();
 
-    app.use('/v2.0/users', userRoutes);
-    app.use('/v2.0/posts', postRoutes);
-    app.use('/v2.0/authentication', authenticationRoutes);
-    app.use(notFoundRoute);
+      configureHelmet(app);
+      configureAuthentication();
+      app.use(requestLogger);
 
-    const port = process.env.PORT;
+      app.use('/v2.0/users', userRoutes);
+      app.use('/v2.0/posts', postRoutes);
+      app.use('/v2.0/authentication', authenticationRoutes);
+      app.use(notFoundRoute);
 
-    app.listen(port, () => {
-      log.info({ port }, 'CSBlogs API now running');
+      const port = process.env.PORT;
+
+      app.listen(port, () => {
+        log.info({ port }, 'CSBlogs API now running');
+      });
+    })
+    .catch(error => {
+      if (error instanceof database.ConnectionError) {
+        log.info('Connection to Database Failed', {
+          host: process.env.CSBLOGS_DATABASE_HOST,
+          port: process.env.CSBLOGS_DATABASE_PORT,
+          name: process.env.CSBLOGS_DATABASE_NAME,
+          username: process.env.CSBLOGS_DATABASE_USERNAME
+        });
+        setTimeout(startServer, 1000);
+      }
     });
-  });
+}
+
+startServer();

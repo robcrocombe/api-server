@@ -9,14 +9,12 @@
   "scripts": {
     "start": "npm run build-and-run | bunyan",
     "start-production": "node ./app/server.js",
-    "create-env": "cp .env.sample .env",
-    "build-and-run": "npm run build && node -r ./app/set-env.js ./app/server.js",
+    "build-and-run": "npm run build && node ./app/server.js",
     "build": "npm run build:js",
     "build:js": "rm -rf app/ && babel src/ -d app/",
     "lint": "eslint .",
     "test": "istanbul cover ./node_modules/.bin/_mocha -- --compilers js:babel-register --require tests/chai-config.js --recursive ./tests/**/*.tests.js",
-    "deploy": "npm run create-deployment-package",
-    "create-deployment-package": "npm run build && zip -r eb-deployment-package.zip . --exclude node_modules/\\* .git/\\* src/\\* test/\\* coverage/\\* .env"
+    "deploy": "now --public --docker -e PORT=\"80\" -e CSBLOGS_DATABASE_NAME=@csb-db-name -e CSBLOGS_DATABASE_USERNAME=@csb-db-user -e CSBLOGS_DATABASE_PASSWORD=@csb-db-password -e CSBLOGS_DATABASE_HOST=@csb-db-host -e CSBLOGS_DATABASE_PORT=@csb-db-port -e CSBLOGS_DATABASE_LOG_SQL_STATEMENTS=\"true\" -e CSBLOGS_TOKEN_EXPIRY_IN_DAYS=\"1\""
   },
   "pre-commit": [
     "lint",
@@ -51,11 +49,11 @@
     "eslint-plugin-mocha": "^4.3.0",
     "istanbul": "^1.0.0-alpha.2",
     "mocha": "^3.0.2",
+    "now": "^0.25.1",
     "pre-commit": "^1.1.2"
   },
   "dependencies": {
     "bunyan": "^1.8.0",
-    "dotenv": "^2.0.0",
     "express": "^4.13.4",
     "helmet": "^2.1.2",
     "moment": "^2.13.0",
