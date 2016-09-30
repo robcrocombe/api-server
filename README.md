@@ -8,3 +8,37 @@
 The service which allows access to CS Blogs data. Most data is public and can be accessed by anyone, but the service also has an authentication capability to allow for user management.
 
 All applications, including the [CS Blogs website](http://csblogs.com) go through this API.
+
+## Building and Running Locally
+If you're interested in how exactly building the docker image and running a container works read the deep dive, otherwise skip straight to the TL;DR.
+
+
+### Deep Dive
+The application is deployed as an immutable [Docker](https://www.docker.com) container. You can build and run this docker container on your machine once you've installed the docker deamon and CLI tools.
+
+To build the API-Server `cd` to this repository and enter the following command: 
+
+```
+docker build -t csblogs-api-server .
+```
+
+This builds the docker image and allows you to refer to it later with the tag `csblogs-api-server`. To then run an container instance of the API-Server you can issue the following command:
+
+```
+docker run -p 80:80 csblogs-api-server
+```
+
+The `-p` flag maps port 80 on your machine to port 80 inside the container. The API-Server binds to port 80 inside the container. If you'd rather have it on another port on your host machine change the value on the left. `3000:80` would allow you to access the API-Server on port 3000 from your machine.
+
+You'll likely notice at this point that the application logs an error:
+
+```
+Connection to Database Failed { host: undefined,
+      port: undefined,
+      name: undefined,
+      username: undefined }
+```
+
+This is because the connection information for the database is provided through environment variables which we haven't set. You can set each of these environment variables using the `-e` flag to the `docker run` command. The environment variable names are listed in the `docker-compose.yml` file. Clearly, in order to be able to do this you will need your own PostgreSQL database. This is where `docker-compose` comes in -- it allows us to stand up both a PostgreSQL container and an API-Server container using just one command and allows us to set environment variables in a file, rather than having to have many `-e` flags in our `docker run` command.
+
+### Docker compose
