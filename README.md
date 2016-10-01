@@ -10,7 +10,7 @@ The service which allows access to CS Blogs data. Most data is public and can be
 All applications, including the [CS Blogs website](http://csblogs.com) go through this API.
 
 ## Building and Running Locally
-If you're interested in how exactly building the docker image and running a container works read the deep dive, otherwise skip straight to the TL;DR.
+If you're interested in how exactly building the docker image and running a container works read the deep dive, otherwise skip straight to the Docker compose section.
 
 
 ### Deep Dive
