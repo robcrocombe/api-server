@@ -10,15 +10,15 @@ services:
         command: start
         restart: always
         ports: 
-            - "3000:3000"
+            - "80:80"
         links:
             - csblogs-postgres
         depends_on:
             - csblogs-postgres
         environment:
-            - PORT=3000
             - CSBLOGS_DATABASE_NAME=
             - CSBLOGS_DATABASE_USERNAME=
+            - PORT=80
             - CSBLOGS_DATABASE_PASSWORD=
             - CSBLOGS_DATABASE_HOST=
             - CSBLOGS_DATABASE_PORT=
