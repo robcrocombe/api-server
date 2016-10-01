@@ -5,7 +5,7 @@ import uuid from 'node-uuid';
 import moment from 'moment';
 import accessToken from '../../database/models/access-token';
 import log from '../../log';
-import * as userController from '../../controllers/user-controller';
+import * as userController from '../user/user-controller';
 
 export function generateTokenForUser(userId) {
   return new Promise((resolve, reject) => {

@@ -1,5 +1,5 @@
-import BlogPost from '../database/models/blog-post';
-import log from '../log';
+import BlogPost from '../../database/models/blog-post';
+import log from '../../log';
 
 const PUBLIC_API_ATTRIBUTES = [
   'id',
