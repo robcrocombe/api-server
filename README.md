@@ -53,7 +53,7 @@ The API-Server comes with a bunch of tests written in a BDD fashion using `chai`
 All code for the CSBlogs project uses the Airbnb `ESLint` style rules. To run the linter against your code in order to check if it meets the projects style guidlines you can issue the command `docker run csblogs-api-server lint`.
 
 ## Deploying
-The API-Server is hosted on [Zeit Now](https://zeit.co/now). One of the cool things about using `Now` is that anyone can deploy, up to 20 times a month, for free. So to have your own instance of the API-Server running in the cloud (at no cost) you just have to issue a few commands.
+The API-Server is hosted on [Zeit Now](https://zeit.co/now). One of the cool things about using `Now` is that anyone can deploy, up to 20 times a month, for free (Note: These deployments are per-person, so you deploying a lot won't negatively impact my ability to deploy to production). So to have your own instance of the API-Server running in the cloud (at no cost) you just have to issue a few commands.
 
 `npm run deploy` will deploy the dockerized version of the API-Server, so it should operate exactly the same as the docker container on your local machine.
 
