@@ -1,6 +1,6 @@
 import express from 'express';
 import configureHelmet from './security/configure-helmet';
-import { configureAuthentication } from './components/authentication/service-authentication';
+import { configureAuthentication } from './components/authentication/service-authentication/service-authentication';
 import database from './database';
 import log from './log';
 import requestLogger from './log/request-logger';

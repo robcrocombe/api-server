@@ -1,5 +1,5 @@
 import Sequelize from 'sequelize';
-import database from '../';
+import database from '../../database';
 
 export default database.define('user', {
   id: {

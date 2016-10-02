@@ -1,6 +1,6 @@
 import express from 'express';
-import { serviceAuthenticatedOnly } from './service-authentication';
-import { generateTokenForUser } from './csb-token-authentication';
+import { serviceAuthenticatedOnly } from './service-authentication/service-authentication';
+import { generateTokenForUser } from './csb-access-token/csb-token-authentication';
 
 const router = express.Router(); // eslint-disable-line new-cap
 

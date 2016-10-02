@@ -1,4 +1,4 @@
-import BlogPost from '../../database/models/blog-post';
+import BlogPost from './post-model';
 import log from '../../log';
 
 const PUBLIC_API_ATTRIBUTES = [

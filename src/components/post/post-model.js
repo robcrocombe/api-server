@@ -1,6 +1,6 @@
 import Sequelize from 'sequelize';
-import database from '../';
-import User from './user';
+import database from '../../database';
+import User from '../user/user-model';
 
 const blogPostDatabaseDefinition = database.define('blog_post', {
   id: {

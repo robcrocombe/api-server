@@ -1,8 +1,8 @@
 import passport from 'passport';
 import { BasicStrategy } from 'passport-http';
 import request from 'request';
-import log from '../../log';
-import User from '../../database/models/user';
+import log from '../../../log';
+import User from '../../user/user-model';
 
 function getUserInformationFromGithub(accessToken) {
   return new Promise((resolve, reject) => {
