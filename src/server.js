@@ -1,13 +1,13 @@
 import express from 'express';
 import configureHelmet from './security/configure-helmet';
-import { configureAuthentication } from './security/authentication/service-authentication';
+import { configureAuthentication } from './components/authentication/service-authentication/service-authentication';
 import database from './database';
 import log from './log';
 import requestLogger from './log/request-logger';
-import userRoutes from './routes/users';
-import postRoutes from './routes/posts';
-import authenticationRoutes from './routes/authentication';
-import notFoundRoute from './routes/not-found';
+import userRoutes from './components/user/user-routes';
+import postRoutes from './components/post/post-routes';
+import authenticationRoutes from './components/authentication/authentication-routes';
+import notFoundRoute from './errors/not-found-routes';
 
 function startServer() {
   database.sync()

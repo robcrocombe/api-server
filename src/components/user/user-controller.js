@@ -1,5 +1,5 @@
-import User from '../database/models/user';
-import log from '../log';
+import User from './user-model';
+import log from '../../log';
 
 const PUBLIC_API_ATTRIBUTES = [
   'id',
