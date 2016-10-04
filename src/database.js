@@ -1,5 +1,5 @@
 import Sequelize from 'sequelize';
-import log from '../log';
+import log from './log';
 
 function logSQLStatements(sqlStatement) {
   log.info({ sqlStatement }, 'SQL Statement Executed');

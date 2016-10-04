@@ -1,8 +1,9 @@
 import express from 'express';
-import configureHelmet from './security/configure-helmet';
-import database from './database';
+
 import log from './log';
-import requestLogger from './log/request-logger';
+import database from './database';
+import configureHelmet from './middleware/configure-helmet';
+import requestLogger from './middleware/request-logger';
 import userRoutes from './components/user/user-routes';
 import postRoutes from './components/post/post-routes';
 import notFoundRoute from './errors/not-found-routes';
