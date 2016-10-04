@@ -1,12 +1,10 @@
 import express from 'express';
 import configureHelmet from './security/configure-helmet';
-import { configureAuthentication } from './components/authentication/service-authentication/service-authentication';
 import database from './database';
 import log from './log';
 import requestLogger from './log/request-logger';
 import userRoutes from './components/user/user-routes';
 import postRoutes from './components/post/post-routes';
-import authenticationRoutes from './components/authentication/authentication-routes';
 import notFoundRoute from './errors/not-found-routes';
 
 function startServer() {
@@ -17,12 +15,10 @@ function startServer() {
       const app = express();
 
       configureHelmet(app);
-      configureAuthentication();
       app.use(requestLogger);
 
       app.use('/v2.0/users', userRoutes);
       app.use('/v2.0/posts', postRoutes);
-      app.use('/v2.0/authentication', authenticationRoutes);
       app.use(notFoundRoute);
 
       const port = process.env.PORT;
