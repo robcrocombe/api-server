@@ -20,8 +20,8 @@ function startServer() {
       app.use(requestLogger);
       app.use(bodyParser.json());
 
-      app.use('/v2.0/users', userRoutes);
-      app.use('/v2.0/posts', postRoutes);
+      app.use('/v2.0/user', userRoutes);
+      app.use('/v2.0/post', postRoutes);
       app.use(notFoundRoute);
 
       const port = process.env.PORT;
