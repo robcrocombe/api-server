@@ -1,4 +1,5 @@
 import express from 'express';
+import bodyParser from 'body-parser';
 
 import log from './log';
 import database from './database';
@@ -17,6 +18,7 @@ function startServer() {
 
       configureHelmet(app);
       app.use(requestLogger);
+      app.use(bodyParser.json());
 
       app.use('/v2.0/users', userRoutes);
       app.use('/v2.0/posts', postRoutes);
