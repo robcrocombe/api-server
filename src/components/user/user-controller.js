@@ -1,5 +1,8 @@
+import Ajv from 'ajv';
+
 import User from './user-model';
 import log from '../../log';
+import newUserSchema from './new-user-schema.json';
 
 const PUBLIC_API_ATTRIBUTES = [
   'id',
@@ -22,6 +25,20 @@ const PUBLIC_API_ATTRIBUTES = [
 const DEFAULT_ORDER = [
   ['first_name', 'ASC']
 ];
+
+export function create(properties) {
+  return new Promise((resolve, reject) => {
+    const ajv = new Ajv({ allErrors: true });
+    const validate = ajv.compile(newUserSchema);
+    if (!validate(properties)) {
+      const errorMessage = validate.errors.map(error => error.message)
+                                          .reduce((message, thisError) => `${message} ${thisError}`, 'Validation Errors:');
+      reject(new Error(errorMessage));
+    } else {
+      resolve();
+    }
+  });
+}
 
 export function getAll() {
   return new Promise((resolve, reject) => {
