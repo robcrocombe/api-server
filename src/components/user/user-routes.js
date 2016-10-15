@@ -46,6 +46,16 @@ function respondGetMany(res, manyIds) {
     });
 }
 
+router.post('/', (req, res) => {
+  users.create(req.body)
+    .then(newUser => {
+      res.json(newUser);
+    })
+    .catch(error => {
+      res.status(422).json({ error: error.message });
+    });
+});
+
 router.get('/', (req, res) => {
   const pageNumber = req.query.page;
   const pageSize = req.query.page_size;
