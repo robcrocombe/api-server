@@ -1,0 +1,54 @@
+{
+    "title": "New User Schema",
+    "type": "object",
+    "properties": {
+        "firstName": {
+            "type": "string"
+        },
+        "lastName": {
+            "type": "string"
+        },
+        "emailAddress": {
+            "type": "string",
+            "format": "email"
+        },
+        "profilePictureURI": {
+            "type": "string",
+            "format": "uri"
+        },
+        "vanityName": {
+            "type": "string",
+            "pattern": "[a-z]{4,12}"
+        },
+        "bio": {
+            "type": "string"
+        },
+        "websiteURI": {
+            "type": "string",
+            "format": "uri"
+        },
+        "blogURI": {
+            "type": "string",
+            "format": "uri"
+        },
+        "blogFeedURI": {
+            "type:": "string",
+            "format": "uri"
+        },
+        "cvURI": {
+            "type": "string",
+            "format": "uri"
+        },
+        "linkedInURI": {
+            "type": "string",
+            "format": "uri"
+        },
+        "githubUsername": {
+            "type": "string"
+        },
+        "twitterUsername": {
+            "type": "string"
+        }
+    },
+    "required": ["firstName", "lastName", "emailAddress", "profilePictureURI", "vanityName", "bio", "blogFeedURI"]
+}
