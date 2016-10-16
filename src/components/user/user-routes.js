@@ -56,7 +56,7 @@ router.post('/', (req, res) => {
     })
     .catch(error => {
       if (error instanceof SchemaValidationError) {
-        res.status(422).json({ error: error.message });
+        res.status(422).json({ error: error.message, validationErrors: error.validationErrors });
       } else if (error instanceof UniqueConstraintError) {
         res.status(422).json({ error: 'vanityName already in use' });
       } else {

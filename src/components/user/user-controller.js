@@ -33,10 +33,7 @@ function validateNewUserJSON(properties) {
     const ajv = new Ajv({ allErrors: true });
     const validate = ajv.compile(newUserSchema);
     if (!validate(properties)) {
-      const errorMessage = validate.errors.map(error => ({ field: error.dataPath, message: error.message }))
-                                          .reduce((message, thisError) => `${message} [${thisError.field || 'New User'}] ${thisError.message},`, 'Validation Errors:')
-                                          .slice(0, -1);
-      reject(new SchemaValidationError(errorMessage));
+      reject(new SchemaValidationError('New User', validate.errors));
     } else {
       resolve(properties);
     }
