@@ -104,13 +104,13 @@ export function getManyByIds(ids) {
   });
 }
 
-export function getById(id) {
+export function getById(id, verifiedOnly = true) {
   return new Promise((resolve, reject) => {
     User.findOne({
       attributes: PUBLIC_API_ATTRIBUTES,
       where: {
         id,
-        verified: true
+        verified: verifiedOnly
       },
       raw: true
     })
