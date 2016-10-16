@@ -35,9 +35,18 @@ export function create(properties) {
                                           .reduce((message, thisError) => `${message} ${thisError}`, 'Validation Errors:');
       reject(new Error(errorMessage));
     } else {
-      resolve();
+      // <temp>
+      // Get these from authentication once implemented
+      const modelAttributes = properties;
+      modelAttributes.verified = true;
+      modelAttributes.authenticationId = '123';
+      modelAttributes.authenticationProvider = 'github';
+      // </temp>
+
+      resolve(modelAttributes);
     }
-  });
+  })
+    .then(modelAttributes => User.create(modelAttributes));
 }
 
 export function getAll() {
