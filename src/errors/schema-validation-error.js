@@ -5,10 +5,10 @@ function formatValidationErrors(ajvErrors) {
   normalizedAjvErrors.fields[''].forEach(requiredMessage => {
     const missingFieldName = requiredMessage.split('\'')[1];
 
-    if(!normalizedAjvErrors.fields[`${missingFieldName}`]) {
-      normalizedAjvErrors.fields[`${missingFieldName}`] = [];
+    if(!normalizedAjvErrors.fields[missingFieldName]) {
+      normalizedAjvErrors.fields[missingFieldName] = [];
     }
-    normalizedAjvErrors.fields[`${missingFieldName}`].push('required');
+    normalizedAjvErrors.fields[missingFieldName].push('required');
   });
 
   delete normalizedAjvErrors.fields['']
