@@ -2,16 +2,19 @@ import normalizeAjvErrors from 'ajv-error-messages';
 
 function formatValidationErrors(ajvErrors) {
   const normalizedAjvErrors = normalizeAjvErrors(ajvErrors);
-  normalizedAjvErrors.fields[''].forEach(requiredMessage => {
-    const missingFieldName = requiredMessage.split('\'')[1];
 
-    if(!normalizedAjvErrors.fields[missingFieldName]) {
-      normalizedAjvErrors.fields[missingFieldName] = [];
-    }
-    normalizedAjvErrors.fields[missingFieldName].push('required');
-  });
+  if (normalizedAjvErrors.fields['']) {
+    normalizedAjvErrors.fields[''].forEach(requiredMessage => {
+      const missingFieldName = requiredMessage.split('\'')[1];
 
-  delete normalizedAjvErrors.fields['']
+      if(!normalizedAjvErrors.fields[missingFieldName]) {
+        normalizedAjvErrors.fields[missingFieldName] = [];
+      }
+      normalizedAjvErrors.fields[missingFieldName].push('required');
+    });
+
+    delete normalizedAjvErrors.fields['']
+  }
 
   const validationErrors = normalizedAjvErrors.fields;
   return validationErrors;
