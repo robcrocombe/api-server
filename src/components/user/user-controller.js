@@ -1,5 +1,10 @@
+import Ajv from 'ajv';
+
 import User from './user-model';
 import log from '../../log';
+import newUserSchema from './new-user-schema.json';
+import SchemaValidationError from '../../errors/schema-validation-error';
+import UniqueConstraintError from '../../errors/unique-constraint-error';
 
 const PUBLIC_API_ATTRIBUTES = [
   'id',
@@ -22,6 +27,40 @@ const PUBLIC_API_ATTRIBUTES = [
 const DEFAULT_ORDER = [
   ['first_name', 'ASC']
 ];
+
+function validateNewUserJSON(properties) {
+  return new Promise((resolve, reject) => {
+    const ajv = new Ajv({ allErrors: true });
+    const validate = ajv.compile(newUserSchema);
+    if (!validate(properties)) {
+      reject(new SchemaValidationError('New User', validate.errors));
+    } else {
+      resolve(properties);
+    }
+  });
+}
+
+function attachAuthenticationDetailsToUser(properties) {
+  // <temp>
+  const authenticatedUser = properties;
+  authenticatedUser.authenticationId = 'temp';
+  authenticatedUser.authenticationProvider = 'github';
+  // </temp>
+
+  return authenticatedUser;
+}
+
+function saveUserToDatabase(properties) {
+  return new Promise((resolve, reject) =>
+    User.create(properties)
+      .then(resolve)
+      .catch(error => {
+        if (error.name === 'SequelizeUniqueConstraintError') {
+          reject(new UniqueConstraintError('Vanity name must be unique'));
+        }
+      })
+    );
+}
 
 export function getAll() {
   return new Promise((resolve, reject) => {
@@ -78,13 +117,13 @@ export function getManyByIds(ids) {
   });
 }
 
-export function getById(id) {
+export function getById(id, verifiedOnly = true) {
   return new Promise((resolve, reject) => {
     User.findOne({
       attributes: PUBLIC_API_ATTRIBUTES,
       where: {
         id,
-        verified: true
+        verified: verifiedOnly
       },
       raw: true
     })
@@ -132,4 +171,11 @@ export function getPage(pageNumber, pageSize) {
         reject(error);
       });
   });
+}
+
+export function create(properties) {
+  return validateNewUserJSON(properties)
+          .then(attachAuthenticationDetailsToUser)
+          .then(authenticatedUser => saveUserToDatabase(authenticatedUser))
+          .then(newUserModel => getById(newUserModel.dataValues.id, false));
 }

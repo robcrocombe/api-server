@@ -1,4 +1,5 @@
 import express from 'express';
+import bodyParser from 'body-parser';
 
 import log from './log';
 import database from './database';
@@ -7,6 +8,7 @@ import requestLogger from './middleware/request-logger';
 import userRoutes from './components/user/user-routes';
 import postRoutes from './components/post/post-routes';
 import notFoundRoute from './errors/not-found-routes';
+import bodyParserSyntaxError from './errors/body-parser-json-syntax-error';
 
 function startServer() {
   database.sync()
@@ -17,9 +19,11 @@ function startServer() {
 
       configureHelmet(app);
       app.use(requestLogger);
+      app.use(bodyParser.json());
+      app.use(bodyParserSyntaxError);
 
-      app.use('/v2.0/users', userRoutes);
-      app.use('/v2.0/posts', postRoutes);
+      app.use('/v2.0/user', userRoutes);
+      app.use('/v2.0/post', postRoutes);
       app.use(notFoundRoute);
 
       const port = process.env.PORT;

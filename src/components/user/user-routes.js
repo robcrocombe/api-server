@@ -1,5 +1,8 @@
 import express from 'express';
 import * as users from './user-controller';
+import log from '../../log';
+import SchemaValidationError from '../../errors/schema-validation-error';
+import UniqueConstraintError from '../../errors/unique-constraint-error';
 
 const router = express.Router(); // eslint-disable-line new-cap
 
@@ -45,6 +48,23 @@ function respondGetMany(res, manyIds) {
       res.status(500).json({ error: 'Could not get list of users' });
     });
 }
+
+router.post('/', (req, res) => {
+  users.create(req.body)
+    .then(newUser => {
+      res.status(201).json(newUser);
+    })
+    .catch(error => {
+      if (error instanceof SchemaValidationError) {
+        res.status(422).json({ error: error.message, validationErrors: error.validationErrors });
+      } else if (error instanceof UniqueConstraintError) {
+        res.status(422).json({ error: 'vanityName already in use' });
+      } else {
+        log.error('An unexpected error occured', error);
+        res.status(500).json({ error: 'An unexpected error occured' });
+      }
+    });
+});
 
 router.get('/', (req, res) => {
   const pageNumber = req.query.page;
