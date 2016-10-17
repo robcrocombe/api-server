@@ -18,7 +18,7 @@
         },
         "vanityName": {
             "type": "string",
-            "pattern": "^[a-z]$",
+            "pattern": "^[a-z]+$",
             "minLength": 4,
             "maxLength": 12
         },
