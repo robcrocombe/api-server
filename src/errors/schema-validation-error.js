@@ -1,23 +1,42 @@
-import normalizeAjvErrors from 'ajv-error-messages';
-
 function formatValidationErrors(ajvErrors) {
-  const normalizedAjvErrors = normalizeAjvErrors(ajvErrors);
+  const normalizedErrors = {};
 
-  if (normalizedAjvErrors.fields['']) {
-    normalizedAjvErrors.fields[''].forEach(requiredMessage => {
-      const missingFieldName = requiredMessage.split('\'')[1];
+  for (const err of ajvErrors) {
+    const key = err.keyword === 'required' ? err.params.missingProperty : err.dataPath.slice(1);
 
-      if(!normalizedAjvErrors.fields[missingFieldName]) {
-        normalizedAjvErrors.fields[missingFieldName] = [];
+    const value = ((keyword) => {
+      switch (keyword) {
+        case 'required':
+          return 'cannot be blank';
+        case 'minLength':
+          return `must be more than ${err.params.limit} characters`;
+        case 'maxLength':
+          return `must be less than ${err.params.limit} characters`;
+        case 'format':
+          switch (err.params.format) {
+            case 'uri':
+              return 'must be a valid URI';
+            case 'email':
+              return 'must be a valid email address';
+            default:
+              return err.message;
+          }
+        case 'pattern':
+          switch (err.params.pattern) {
+            case '^[a-z]+$':
+              return 'must only contain characters a-z';
+            default:
+              return err.message;
+          }
+        default:
+          return err.message;
       }
-      normalizedAjvErrors.fields[missingFieldName].push('required');
-    });
+    })(err.keyword);
 
-    delete normalizedAjvErrors.fields['']
+    normalizedErrors[key] = value;
   }
 
-  const validationErrors = normalizedAjvErrors.fields;
-  return validationErrors;
+  return normalizedErrors;
 }
 
 export default function SchemaValidationError(schemaName, ajvErrors) {
