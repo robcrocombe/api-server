@@ -1,8 +1,6 @@
 import express from 'express';
 import * as users from './user-controller';
 import log from '../../log';
-import SchemaValidationError from '../../errors/schema-validation-error';
-import UniqueConstraintError from '../../errors/unique-constraint-error';
 
 const router = express.Router(); // eslint-disable-line new-cap
 
@@ -55,13 +53,18 @@ router.post('/', (req, res) => {
       res.status(201).json(newUser);
     })
     .catch(error => {
-      if (error instanceof SchemaValidationError) {
-        res.status(422).json({ error: error.message, validationErrors: error.validationErrors });
-      } else if (error instanceof UniqueConstraintError) {
-        res.status(422).json({ error: 'vanityName already in use' });
-      } else {
-        log.error('An unexpected error occured', error);
-        res.status(500).json({ error: 'An unexpected error occured' });
+      switch (error.name) {
+        case 'SchemaValidationError':
+          res.status(422).json({ error: error.message, validationErrors: error.validationErrors });
+          break;
+        case 'FeedLoopError':
+        case 'UniqueConstraintError':
+          res.status(422).json({ error: error.message });
+          break;
+        default:
+          log.error('An unexpected error occured', error);
+          res.status(500).json({ error: 'An unexpected error occured' });
+          break;
       }
     });
 });

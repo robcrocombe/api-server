@@ -1,10 +1,14 @@
 import Ajv from 'ajv';
+import URI from 'urijs';
 
 import User from './user-model';
 import log from '../../log';
 import newUserSchema from './new-user-schema.json';
 import SchemaValidationError from '../../errors/schema-validation-error';
 import UniqueConstraintError from '../../errors/unique-constraint-error';
+import FeedLoopError from '../../errors/feed-loop-error';
+
+const CSBLOGS_DOMAIN = 'csblogs.com';
 
 const PUBLIC_API_ATTRIBUTES = [
   'id',
@@ -28,12 +32,38 @@ const DEFAULT_ORDER = [
   ['first_name', 'ASC']
 ];
 
-function validateNewUserJSON(properties) {
+function trimNewUserJSON(originalProps) {
+  const properties = originalProps;
+
+  for (const key of Object.keys(properties)) {
+    properties[key] = properties[key].trim();
+
+    if (properties[key] === '') {
+      delete properties[key];
+    }
+  }
+
+  return properties;
+}
+
+function validateNewUserSchema(properties) {
   return new Promise((resolve, reject) => {
     const ajv = new Ajv({ allErrors: true });
     const validate = ajv.compile(newUserSchema);
     if (!validate(properties)) {
       reject(new SchemaValidationError('New User', validate.errors));
+    } else {
+      resolve(properties);
+    }
+  });
+}
+
+function validateNewUserFeedLoop(properties) {
+  return new Promise((resolve, reject) => {
+    const feedURI = new URI(properties.blogFeedURI);
+
+    if (feedURI.domain() === CSBLOGS_DOMAIN) {
+      reject(new FeedLoopError(CSBLOGS_DOMAIN));
     } else {
       resolve(properties);
     }
@@ -56,7 +86,7 @@ function saveUserToDatabase(properties) {
       .then(resolve)
       .catch(error => {
         if (error.name === 'SequelizeUniqueConstraintError') {
-          reject(new UniqueConstraintError('Vanity name must be unique'));
+          reject(new UniqueConstraintError('Vanity Name already in use'));
         }
       })
     );
@@ -174,7 +204,10 @@ export function getPage(pageNumber, pageSize) {
 }
 
 export function create(properties) {
-  return validateNewUserJSON(properties)
+  const trimmedProps = trimNewUserJSON(properties);
+
+  return validateNewUserSchema(trimmedProps)
+          .then(validateNewUserFeedLoop)
           .then(attachAuthenticationDetailsToUser)
           .then(authenticatedUser => saveUserToDatabase(authenticatedUser))
           .then(newUserModel => getById(newUserModel.dataValues.id, false));
