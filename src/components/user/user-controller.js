@@ -59,15 +59,13 @@ function validateNewUserSchema(properties) {
 }
 
 function validateNewUserFeedLoop(properties) {
-  return new Promise((resolve, reject) => {
-    const feedURI = new URI(properties.blogFeedURI);
+  const feedURI = new URI(properties.blogFeedURI);
 
-    if (feedURI.domain() === CSBLOGS_DOMAIN) {
-      reject(new FeedLoopError(CSBLOGS_DOMAIN));
-    } else {
-      resolve(properties);
-    }
-  });
+  if (feedURI.domain() === CSBLOGS_DOMAIN) {
+    throw new FeedLoopError(CSBLOGS_DOMAIN);
+  }
+
+  return properties;
 }
 
 function attachAuthenticationDetailsToUser(properties) {
@@ -81,15 +79,12 @@ function attachAuthenticationDetailsToUser(properties) {
 }
 
 function saveUserToDatabase(properties) {
-  return new Promise((resolve, reject) =>
-    User.create(properties)
-      .then(resolve)
-      .catch(error => {
-        if (error.name === 'SequelizeUniqueConstraintError') {
-          reject(new UniqueConstraintError('Vanity Name already in use'));
-        }
-      })
-    );
+  return User.create(properties)
+    .catch(error => {
+      if (error.name === 'SequelizeUniqueConstraintError') {
+        throw new UniqueConstraintError('Vanity Name already in use');
+      }
+    });
 }
 
 export function getAll() {
