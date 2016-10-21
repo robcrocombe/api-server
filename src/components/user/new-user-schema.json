@@ -54,5 +54,5 @@
             "type": "string"
         }
     },
-    "required": ["firstName", "lastName", "emailAddress", "profilePictureURI", "vanityName", "bio", "blogFeedURI"]
+    "required": ["firstName", "lastName", "emailAddress", "profilePictureURI", "vanityName", "bio", "blogFeedURI", "blogURI"]
 }
