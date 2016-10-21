@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 
 const router = express.Router(); // eslint-disable-line new-cap
 
-router.post('/token', (req, res) => {
+router.post('/', (req, res) => {
   const authentication = {
     authenticationProvider: 'github',
     authenticationId: '4321'
@@ -15,3 +15,5 @@ router.post('/token', (req, res) => {
     token
   });
 });
+
+export default router;
