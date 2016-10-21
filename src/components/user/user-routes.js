@@ -55,11 +55,9 @@ router.post('/', (req, res) => {
     .catch(error => {
       switch (error.name) {
         case 'SchemaValidationError':
-          res.status(422).json({ error: error.message, validationErrors: error.validationErrors });
-          break;
-        case 'FeedLoopError':
         case 'UniqueConstraintError':
-          res.status(422).json({ error: error.message });
+        case 'FeedLoopError':
+          res.status(422).json({ error: error.message, validationErrors: error.validationErrors });
           break;
         default:
           log.error('An unexpected error occured', error);
