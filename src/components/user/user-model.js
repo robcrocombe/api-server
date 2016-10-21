@@ -63,11 +63,14 @@ export default database.define('user', {
   },
   blogURI: {
     type: Sequelize.STRING,
-    field: 'blog_uri'
+    field: 'blog_uri',
+    allowNull: false
   },
   blogFeedURI: {
     type: Sequelize.STRING,
-    field: 'blog_feed_uri'
+    field: 'blog_feed_uri',
+    allowNull: false,
+    unique: true
   },
   cvURI: {
     type: Sequelize.STRING,
