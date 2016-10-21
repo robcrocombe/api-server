@@ -8,6 +8,7 @@ import requestLogger from './middleware/request-logger';
 import userRoutes from './components/user/user-routes';
 import postRoutes from './components/post/post-routes';
 import notFoundRoute from './errors/not-found-routes';
+import unexpectedErrorRoute from './errors/unexpected-error-routes';
 import bodyParserSyntaxError from './errors/body-parser-json-syntax-error';
 
 function startServer() {
@@ -25,6 +26,7 @@ function startServer() {
       app.use('/v2.0/user', userRoutes);
       app.use('/v2.0/post', postRoutes);
       app.use(notFoundRoute);
+      app.use(unexpectedErrorRoute);
 
       const port = process.env.PORT;
 
