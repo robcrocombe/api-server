@@ -7,6 +7,7 @@ import configureHelmet from './middleware/configure-helmet';
 import requestLogger from './middleware/request-logger';
 import userRoutes from './components/user/user-routes';
 import postRoutes from './components/post/post-routes';
+import tokenRoutes from './components/token/token-routes';
 import notFoundRoute from './errors/not-found-routes';
 import bodyParserSyntaxError from './errors/body-parser-json-syntax-error';
 
@@ -24,6 +25,7 @@ function startServer() {
 
       app.use('/v2.0/user', userRoutes);
       app.use('/v2.0/post', postRoutes);
+      app.use('/v2.0/token', tokenRoutes);
       app.use(notFoundRoute);
 
       const port = process.env.PORT;
