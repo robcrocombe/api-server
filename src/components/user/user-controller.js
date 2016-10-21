@@ -160,6 +160,21 @@ export function getById(id, verifiedOnly = true) {
   });
 }
 
+export function getByAuthenticationDetails(provider, id) {
+  return User.findOne({
+    attributes: PUBLIC_API_ATTRIBUTES,
+    where: {
+      authentication_provider: provider,
+      authentication_id: id
+    },
+    raw: true
+  })
+    .catch(error => {
+      log.error({ error, provider, id }, 'Error getting user by authentication details');
+      throw error;
+    });
+}
+
 export function getByVanityName(vanityName) {
   return new Promise((resolve, reject) => {
     User.findOne({
