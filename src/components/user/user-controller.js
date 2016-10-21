@@ -82,7 +82,9 @@ function saveUserToDatabase(properties) {
   return User.create(properties)
     .catch(error => {
       if (error.name === 'SequelizeUniqueConstraintError') {
-        throw new UniqueConstraintError('Vanity Name already in use');
+        throw new UniqueConstraintError({
+          vanityName: 'already in use'
+        });
       }
     });
 }
