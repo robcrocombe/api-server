@@ -23,4 +23,4 @@ services:
             - CSBLOGS_DATABASE_HOST=
             - CSBLOGS_DATABASE_PORT=
             - CSBLOGS_DATABASE_LOG_SQL_STATEMENTS=
-            - CSBLOGS_TOKEN_EXPIRY_IN_DAYS=
+            - CSBLOGS_JWT_SECRET=
