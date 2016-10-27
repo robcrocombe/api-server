@@ -1,7 +1,8 @@
 function formatValidationErrors(ajvErrors) {
   const normalizedErrors = {};
 
-  for (const err of ajvErrors) {
+  for (let i = 0; i < ajvErrors.length; ++i) {
+    const err = ajvErrors[i];
     const key = err.keyword === 'required' ? err.params.missingProperty : err.dataPath.slice(1);
 
     const value = ((keyword) => {

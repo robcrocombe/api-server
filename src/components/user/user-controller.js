@@ -34,8 +34,11 @@ const DEFAULT_ORDER = [
 
 function trimNewUserJSON(originalProps) {
   const properties = originalProps;
+  const keys = Object.keys(properties);
 
-  for (const key of Object.keys(properties)) {
+  for (let i = 0; i < keys.length; ++i) {
+    const key = keys[i];
+
     properties[key] = properties[key].trim();
 
     if (properties[key] === '') {
