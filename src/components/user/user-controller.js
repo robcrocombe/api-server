@@ -68,12 +68,10 @@ function validateNewUserFeedLoop(properties) {
   return properties;
 }
 
-function attachAuthenticationDetailsToUser(properties) {
-  // <temp>
+function attachAuthenticationDetailsToUser(properties, authenticationDetails) {
   const authenticatedUser = properties;
-  authenticatedUser.authenticationId = 'temp';
-  authenticatedUser.authenticationProvider = 'github';
-  // </temp>
+  authenticatedUser.authenticationId = authenticationDetails.authenticationId;
+  authenticatedUser.authenticationProvider = authenticationDetails.authenticationProvider;
 
   return authenticatedUser;
 }
@@ -213,12 +211,12 @@ export function getPage(pageNumber, pageSize) {
   });
 }
 
-export function create(properties) {
+export function create(properties, authenticationDetails) {
   const trimmedProps = trimNewUserJSON(properties);
 
   return validateNewUserSchema(trimmedProps)
           .then(validateNewUserFeedLoop)
-          .then(attachAuthenticationDetailsToUser)
+          .then(user => attachAuthenticationDetailsToUser(user, authenticationDetails))
           .then(authenticatedUser => saveUserToDatabase(authenticatedUser))
           .then(newUserModel => getById(newUserModel.dataValues.id, false));
 }

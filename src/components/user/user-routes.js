@@ -49,7 +49,7 @@ function respondGetMany(res, manyIds) {
 }
 
 router.post('/', authenticateUnregistered, (req, res) => {
-  users.create(req.body)
+  users.create(req.body, req.user)
     .then(newUser => {
       res.status(201).json(newUser);
     })
