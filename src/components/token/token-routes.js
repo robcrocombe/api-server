@@ -1,35 +1,19 @@
 import express from 'express';
-import jwt from 'jsonwebtoken';
-import fetch from 'node-fetch';
+import * as token from './token-controller';
 
 const router = express.Router(); // eslint-disable-line new-cap
 
-function getGitHubUserDetails(accessToken) {
-  fetch(`https://api.github.com/user?access_token=${accessToken}`)
-    .then(res => res.json())
-    .then(json => ({ authenticationProvider: 'github', authenticationId: json.id }));
-}
-
 router.post('/', (req, res) => {
-  let authentication = null;
-
-  switch (req.body.authenticationProvider) {
-    case 'github':
-      authentication = getGitHubUserDetails(res.body.accessToken);
-      break;
-    default:
-      return res.status(422).json({ error: 'Authentication Provider required' });
-  }
-
-  if (!authentication) {
-    return res.status(422).json({ error: `Incorrect ${req.body.authenticationProvider} authentication details provided` });
-  }
-
-  const token = jwt.sign(authentication, process.env.CSBLOGS_JWT_SECRET);
-
-  return res.json({
-    token
-  });
+  const authenticationProvider = req.body.authenticationProvider;
+  const accessToken = req.body.accessToken;
+  token.generateAuthenticationToken(authenticationProvider, accessToken)
+    .then(csbToken => res.json({ csbToken }))
+    .catch(error => {
+      if (error.name === 'ThirdPartyAuthenticationError') {
+        return res.status(422).json({ error: error.message });
+      }
+      throw error;
+    });
 });
 
 export default router;
