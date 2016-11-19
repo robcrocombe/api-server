@@ -6,7 +6,9 @@ const router = express.Router(); // eslint-disable-line new-cap
 router.post('/', (req, res) => {
   const authenticationProvider = req.body.authenticationProvider;
   const accessToken = req.body.accessToken;
-  token.generateAuthenticationToken(authenticationProvider, accessToken)
+  const accessAppKey = req.body.accessAppKey;
+
+  token.generateAuthenticationToken(authenticationProvider, accessToken, accessAppKey)
     .then(csbToken => res.json({ csbToken }))
     .catch(error => {
       if (error.name === 'ThirdPartyAuthenticationError') {
