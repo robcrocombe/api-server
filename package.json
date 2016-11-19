@@ -14,7 +14,7 @@
     "build:js": "rm -rf app/ && babel src/ -d app/ --copy-files",
     "lint": "eslint .",
     "test": "istanbul cover ./node_modules/.bin/_mocha -- --compilers js:babel-register --require tests/chai-config.js --recursive ./tests/**/*.tests.js",
-    "deploy": "now --public --docker -e PORT=\"80\" -e CSBLOGS_DATABASE_NAME=@csb-db-name -e CSBLOGS_DATABASE_USERNAME=@csb-db-user -e CSBLOGS_DATABASE_PASSWORD=@csb-db-password -e CSBLOGS_DATABASE_HOST=@csb-db-host -e CSBLOGS_DATABASE_PORT=@csb-db-port -e CSBLOGS_DATABASE_LOG_SQL_STATEMENTS=\"true\" -e CSBLOGS_TOKEN_EXPIRY_IN_DAYS=\"1\""
+    "deploy": "now --public --docker -e PORT=\"80\" -e CSBLOGS_DATABASE_NAME=@csb-db-name -e CSBLOGS_DATABASE_USERNAME=@csb-db-user -e CSBLOGS_DATABASE_PASSWORD=@csb-db-password -e CSBLOGS_DATABASE_HOST=@csb-db-host -e CSBLOGS_DATABASE_PORT=@csb-db-port -e CSBLOGS_JWT_SECRET=@csb-jwt-secret -e CSBLOGS_DATABASE_LOG_SQL_STATEMENTS=\"true\""
   },
   "pre-commit": [
     "lint",
