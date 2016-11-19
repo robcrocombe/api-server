@@ -10,7 +10,7 @@ function getGitHubUserDetails(accessToken) {
       throw new Error(res.statusText);
     })
     .then(res => res.json())
-    .then(json => ({ authenticationProvider: 'github', authenticationId: json.id }));
+    .then(json => ({ authenticationProvider: 'github', authenticationId: `${json.id}` }));
 }
 
 function generateCSBToken(authenticationDetails) {
