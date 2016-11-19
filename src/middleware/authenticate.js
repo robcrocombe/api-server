@@ -7,7 +7,7 @@ const options = {
   secretOrKey: process.env.CSBLOGS_JWT_SECRET
 };
 
-passport.use(new JwtStrategy(options, (jwtPayload, done) => {
+passport.use('jwt', new JwtStrategy(options, (jwtPayload, done) => {
   const authenticationProvider = jwtPayload.authenticationProvider;
   const authenticationId = jwtPayload.authenticationId;
 
@@ -24,4 +24,9 @@ passport.use(new JwtStrategy(options, (jwtPayload, done) => {
     });
 }));
 
+passport.use('jwt-unregistered', new JwtStrategy(options, (jwtPayload, done) => {
+  done(null, jwtPayload);
+}));
+
 export default passport.authenticate('jwt', { session: false });
+export const authenticateUnregistered = passport.authenticate('jwt-unregistered', { session: false });
