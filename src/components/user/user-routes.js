@@ -1,6 +1,7 @@
 import express from 'express';
 import * as users from './user-controller';
 import log from '../../log';
+import { authenticateUnregistered } from '../../middleware/authenticate';
 
 const router = express.Router(); // eslint-disable-line new-cap
 
@@ -47,8 +48,8 @@ function respondGetMany(res, manyIds) {
     });
 }
 
-router.post('/', (req, res) => {
-  users.create(req.body)
+router.post('/', authenticateUnregistered, (req, res) => {
+  users.create(req.body, req.user)
     .then(newUser => {
       res.status(201).json(newUser);
     })
