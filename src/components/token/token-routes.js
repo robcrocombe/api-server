@@ -9,7 +9,7 @@ router.post('/', (req, res) => {
   const accessAppKey = req.body.accessAppKey;
 
   token.generateAuthenticationToken(authenticationProvider, accessToken, accessAppKey)
-    .then(csbToken => res.json({ csbToken }))
+    .then(authDetails => res.json(authDetails))
     .catch(error => {
       if (error.name === 'ThirdPartyAuthenticationError') {
         return res.status(422).json({ error: error.message });
