@@ -86,8 +86,14 @@ router.get('/', (req, res) => {
   }
 });
 
-router.get('/me', (req, res) => {
-  res.json(req.user);
+router.get('/me', authenticateUnregistered, (req, res) => {
+  users.getByAuthenticationDetails(req.user.authenticationProvider, req.user.authenticationId)
+    .then(user => {
+      user ? res.json(user) : res.status(404).json({ error: 'No such user' });
+    })
+    .catch(() => {
+      res.status(500).json({ error: 'Could not get user' });
+    });
 });
 
 router.get('/:id', (req, res) => {

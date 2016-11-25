@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import fetch from 'node-fetch';
+import * as users from '../user/user-controller';
 
 function getGitHubUserDetails(accessToken) {
   return fetch(`https://api.github.com/user?access_token=${accessToken}`)
@@ -41,8 +42,23 @@ function getStackExchangeUserDetails(accessToken, accessAppKey) {
     .then(json => ({ authenticationProvider: 'stack_exchange', authenticationId: `${json.items[0].user_id}` }));
 }
 
-function generateCSBToken(authenticationDetails) {
-  return jwt.sign(authenticationDetails, process.env.CSBLOGS_JWT_SECRET);
+function generateCSBToken(user) {
+  return {
+    isRegistered: user.isRegistered,
+    csbToken: jwt.sign(user.authDetails, process.env.CSBLOGS_JWT_SECRET)
+  };
+}
+
+function setIsRegisteredUser(authDetails) {
+  return users.getByAuthenticationDetails(authDetails.authenticationProvider, authDetails.authenticationId)
+    .then(user => ({
+      isRegistered: (user != null),
+      authDetails
+    }))
+    .catch(() => ({
+      isRegistered: false,
+      authDetails
+    }));
 }
 
 export function generateAuthenticationToken(authenticationProvider, accessToken, accessAppKey) { // eslint-disable-line import/prefer-default-export
@@ -61,5 +77,7 @@ export function generateAuthenticationToken(authenticationProvider, accessToken,
       throw new Error('Authentication Provider Required');
   }
 
-  return getUserDetailsPromise(accessToken, accessAppKey).then(generateCSBToken);
+  return getUserDetailsPromise(accessToken, accessAppKey)
+    .then(setIsRegisteredUser)
+    .then(generateCSBToken);
 }
