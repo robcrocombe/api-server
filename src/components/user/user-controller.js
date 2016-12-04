@@ -7,7 +7,6 @@ import newUserSchema from './new-user-schema.json';
 import SchemaValidationError from '../../errors/schema-validation-error';
 import UniqueConstraintError from '../../errors/unique-constraint-error';
 import FeedLoopError from '../../errors/feed-loop-error';
-import NotFoundError from '../../errors/not-found-error';
 
 const CSBLOGS_DOMAIN = 'csblogs.com';
 
@@ -98,12 +97,10 @@ function saveUserToDatabase(properties) {
     });
 }
 
-function updateUserInDatabase(user, properties) {
-  if (!user) {
-    throw new NotFoundError('User');
-  }
-
-  return user.updateAttributes(properties)
+function updateUserInDatabase(id, properties) {
+  return User.update(properties, {
+    where: { id }
+  })
     .catch(error => {
       if (error.name === 'SequelizeUniqueConstraintError') {
         const errorInfo = {};
@@ -175,7 +172,7 @@ export function getManyByIds(ids) {
   });
 }
 
-export function getById(id, verifiedOnly = true, raw = true) {
+export function getById(id, verifiedOnly = true) {
   return new Promise((resolve, reject) => {
     User.findOne({
       attributes: PUBLIC_API_ATTRIBUTES,
@@ -183,7 +180,7 @@ export function getById(id, verifiedOnly = true, raw = true) {
         id,
         verified: verifiedOnly
       },
-      raw
+      raw: true
     })
       .then(resolve)
       .catch(error => {
@@ -264,7 +261,7 @@ export function create(properties, authenticationDetails) {
 
   return validateNewUserSchema(trimmedProps)
           .then(validateNewUserFeedLoop)
-          .then(user => attachAuthenticationDetailsToUser(user, authenticationDetails))
+          .then(props => attachAuthenticationDetailsToUser(props, authenticationDetails))
           .then(authenticatedUser => saveUserToDatabase(authenticatedUser))
           .then(newUserModel => getById(newUserModel.dataValues.id, false));
 }
@@ -274,6 +271,5 @@ export function update(properties, userId) {
 
   return validateNewUserSchema(trimmedProps)
           .then(validateNewUserFeedLoop)
-          .then(() => getById(userId, false, false))
-          .then(userObj => updateUserInDatabase(userObj, trimmedProps));
+          .then(props => updateUserInDatabase(userId, props));
 }

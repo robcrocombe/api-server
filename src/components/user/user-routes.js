@@ -103,9 +103,6 @@ router.put('/me', authenticate, (req, res) => {
     })
     .catch((error) => {
       switch (error.name) {
-        case 'NotFoundError':
-          res.status(404).json({ error: error.message });
-          break;
         case 'SchemaValidationError':
         case 'UniqueConstraintError':
         case 'FeedLoopError':
