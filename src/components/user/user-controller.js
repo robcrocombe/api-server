@@ -12,20 +12,25 @@ const CSBLOGS_DOMAIN = 'csblogs.com';
 
 const PUBLIC_API_ATTRIBUTES = [
   'id',
-  'authentication_id',
-  'authentication_provider',
-  'first_name',
-  'last_name',
-  'profile_picture_uri',
-  'vanity_name',
+  'authenticationId',
+  'authenticationProvider',
+  'firstName',
+  'lastName',
+  'profilePictureURI',
+  'vanityName',
   'bio',
-  'website_uri',
-  'blog_uri',
-  'blog_feed_uri',
-  'cv_uri',
-  'linkedin_uri',
-  'github_username',
-  'twitter_username'
+  'websiteURI',
+  'blogURI',
+  'blogFeedURI',
+  'cvURI',
+  'linkedInURI',
+  'githubUsername',
+  'twitterUsername'
+];
+
+const PRIVATE_API_ATTRIBUTES = [
+  'emailAddress',
+  'verified'
 ];
 
 const DEFAULT_ORDER = [
@@ -191,8 +196,10 @@ export function getById(id, verifiedOnly = true) {
 }
 
 export function getByAuthenticationDetails(provider, id) {
+  const attributes = PUBLIC_API_ATTRIBUTES.concat(PRIVATE_API_ATTRIBUTES);
+
   return User.findOne({
-    attributes: PUBLIC_API_ATTRIBUTES,
+    attributes,
     where: {
       authentication_provider: provider,
       authentication_id: id
