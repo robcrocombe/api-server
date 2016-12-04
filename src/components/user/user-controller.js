@@ -7,6 +7,7 @@ import newUserSchema from './new-user-schema.json';
 import SchemaValidationError from '../../errors/schema-validation-error';
 import UniqueConstraintError from '../../errors/unique-constraint-error';
 import FeedLoopError from '../../errors/feed-loop-error';
+import NotFoundError from '../../errors/not-found-error';
 
 const CSBLOGS_DOMAIN = 'csblogs.com';
 
@@ -97,6 +98,28 @@ function saveUserToDatabase(properties) {
     });
 }
 
+function updateUserInDatabase(user, properties) {
+  if (!user) {
+    throw new NotFoundError('User');
+  }
+
+  return user.updateAttributes(properties)
+    .catch(error => {
+      if (error.name === 'SequelizeUniqueConstraintError') {
+        const errorInfo = {};
+
+        if (error.fields.vanity_name) {
+          errorInfo.vanityName = 'already in use';
+        }
+        if (error.fields.blog_feed_uri) {
+          errorInfo.blogFeedURI = 'already in use';
+        }
+
+        throw new UniqueConstraintError(errorInfo);
+      }
+    });
+}
+
 export function getAll() {
   return new Promise((resolve, reject) => {
     User.findAll({
@@ -152,7 +175,7 @@ export function getManyByIds(ids) {
   });
 }
 
-export function getById(id, verifiedOnly = true) {
+export function getById(id, verifiedOnly = true, raw = true) {
   return new Promise((resolve, reject) => {
     User.findOne({
       attributes: PUBLIC_API_ATTRIBUTES,
@@ -160,7 +183,7 @@ export function getById(id, verifiedOnly = true) {
         id,
         verified: verifiedOnly
       },
-      raw: true
+      raw
     })
       .then(resolve)
       .catch(error => {
@@ -203,6 +226,19 @@ export function getByVanityName(vanityName) {
   });
 }
 
+export function removeById(id) {
+  return new Promise((resolve, reject) => {
+    User.destroy({
+      where: { id }
+    })
+      .then(resolve)
+      .catch(error => {
+        log.error({ error, id }, 'Error deleting user');
+        reject(error);
+      });
+  });
+}
+
 export function getPage(pageNumber, pageSize) {
   return new Promise((resolve, reject) => {
     User.findAll({
@@ -231,4 +267,13 @@ export function create(properties, authenticationDetails) {
           .then(user => attachAuthenticationDetailsToUser(user, authenticationDetails))
           .then(authenticatedUser => saveUserToDatabase(authenticatedUser))
           .then(newUserModel => getById(newUserModel.dataValues.id, false));
+}
+
+export function update(properties, userId) {
+  const trimmedProps = trimNewUserJSON(properties);
+
+  return validateNewUserSchema(trimmedProps)
+          .then(validateNewUserFeedLoop)
+          .then(() => getById(userId, false, false))
+          .then(userObj => updateUserInDatabase(userObj, trimmedProps));
 }
