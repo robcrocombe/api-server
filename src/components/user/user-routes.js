@@ -96,6 +96,26 @@ router.get('/me', authenticateUnregistered, (req, res) => {
     });
 });
 
+// router.put('/me', authenticate, (req, res) => {
+//   users.updateSelf(req.user, req.body)
+//     .then(updatedUser => {
+//       res.json({ updatedUser });
+//     })
+//     .catch(() => {
+//       res.status(500).json({ error: 'Unable to update this user' });
+//     });
+// });
+
+router.delete('/me', authenticate, (req, res) => {
+  users.remove(req.user.id)
+    .then(() => {
+      res.json({ deleted: req.user.id });
+    })
+    .catch(() => {
+      res.status(500).json({ error: 'Unable to delete this user' });
+    });
+});
+
 router.get('/:id', (req, res) => {
   const id = req.params.id;
   users.getById(id)
