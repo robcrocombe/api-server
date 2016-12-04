@@ -28,5 +28,5 @@ passport.use('jwt-unregistered', new JwtStrategy(options, (jwtPayload, done) => 
   done(null, jwtPayload);
 }));
 
-export default passport.authenticate('jwt', { session: false });
+export const authenticate = passport.authenticate('jwt', { session: false });
 export const authenticateUnregistered = passport.authenticate('jwt-unregistered', { session: false });

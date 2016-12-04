@@ -1,7 +1,7 @@
 import express from 'express';
 import * as users from './user-controller';
 import log from '../../log';
-import { authenticateUnregistered } from '../../middleware/authenticate';
+import { authenticate, authenticateUnregistered } from '../../middleware/authenticate';
 
 const router = express.Router(); // eslint-disable-line new-cap
 
