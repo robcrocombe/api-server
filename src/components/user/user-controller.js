@@ -76,6 +76,23 @@ function validateNewUserFeedLoop(properties) {
   return properties;
 }
 
+function validateUniqueConstraints(error) {
+  if (error.name === 'SequelizeUniqueConstraintError') {
+    const errorInfo = {};
+
+    if (error.fields.vanity_name) {
+      errorInfo.vanityName = 'already in use';
+    }
+    if (error.fields.blog_feed_uri) {
+      errorInfo.blogFeedURI = 'already in use';
+    }
+
+    throw new UniqueConstraintError(errorInfo);
+  } else {
+    throw error;
+  }
+}
+
 function attachAuthenticationDetailsToUser(properties, authenticationDetails) {
   const authenticatedUser = properties;
   authenticatedUser.authenticationId = authenticationDetails.authenticationId;
@@ -86,40 +103,13 @@ function attachAuthenticationDetailsToUser(properties, authenticationDetails) {
 
 function saveUserToDatabase(properties) {
   return User.create(properties)
-    .catch(error => {
-      if (error.name === 'SequelizeUniqueConstraintError') {
-        const errorInfo = {};
-
-        if (error.fields.vanity_name) {
-          errorInfo.vanityName = 'already in use';
-        }
-        if (error.fields.blog_feed_uri) {
-          errorInfo.blogFeedURI = 'already in use';
-        }
-
-        throw new UniqueConstraintError(errorInfo);
-      }
-    });
+    .catch(validateUniqueConstraints);
 }
 
 function updateUserInDatabase(id, properties) {
   return User.update(properties, {
     where: { id }
-  })
-    .catch(error => {
-      if (error.name === 'SequelizeUniqueConstraintError') {
-        const errorInfo = {};
-
-        if (error.fields.vanity_name) {
-          errorInfo.vanityName = 'already in use';
-        }
-        if (error.fields.blog_feed_uri) {
-          errorInfo.blogFeedURI = 'already in use';
-        }
-
-        throw new UniqueConstraintError(errorInfo);
-      }
-    });
+  }).catch(validateUniqueConstraints);
 }
 
 export function getAll() {
