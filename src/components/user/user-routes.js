@@ -1,7 +1,7 @@
 import express from 'express';
 import * as users from './user-controller';
 import log from '../../log';
-import { authenticateUnregistered } from '../../middleware/authenticate';
+import { authenticate, authenticateUnregistered } from '../../middleware/authenticate';
 
 const router = express.Router(); // eslint-disable-line new-cap
 
@@ -89,10 +89,42 @@ router.get('/', (req, res) => {
 router.get('/me', authenticateUnregistered, (req, res) => {
   users.getByAuthenticationDetails(req.user.authenticationProvider, req.user.authenticationId)
     .then(user => {
-      user ? res.json(user) : res.status(404).json({ error: 'No such user' });
+      user ? res.json(user) : res.status(404).json({ error: 'User not found' });
     })
     .catch(() => {
       res.status(500).json({ error: 'Could not get user' });
+    });
+});
+
+router.put('/me', authenticate, (req, res) => {
+  users.update(req.body, req.user.id)
+    .then(updatedUser => {
+      res.json({ updatedUser });
+    })
+    .catch((error) => {
+      switch (error.name) {
+        case 'SchemaValidationError':
+        case 'UniqueConstraintError':
+        case 'FeedLoopError':
+          res.status(422).json({ error: error.message, validationErrors: error.validationErrors });
+          break;
+        default:
+          log.error('An unexpected error occured', error);
+          res.status(500).json({ error: 'An unexpected error occured' });
+          break;
+      }
+    });
+});
+
+router.delete('/me', authenticate, (req, res) => {
+  users.removeById(req.user.id)
+    .then(() => {
+      res.json({ deleted: req.user.id });
+    })
+    .catch(error => {
+      res.status(500).json({
+        error: error.message || 'Unable to delete this user'
+      });
     });
 });
 
@@ -100,7 +132,7 @@ router.get('/:id', (req, res) => {
   const id = req.params.id;
   users.getById(id)
     .then(user => {
-      user ? res.json(user) : res.status(404).json({ error: 'No such user' });
+      user ? res.json(user) : res.status(404).json({ error: 'User not found' });
     })
     .catch(() => {
       res.status(500).json({ error: 'Could not get user' });

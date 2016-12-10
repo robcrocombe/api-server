@@ -12,20 +12,25 @@ const CSBLOGS_DOMAIN = 'csblogs.com';
 
 const PUBLIC_API_ATTRIBUTES = [
   'id',
-  'authentication_id',
-  'authentication_provider',
-  'first_name',
-  'last_name',
-  'profile_picture_uri',
-  'vanity_name',
+  'authenticationId',
+  'authenticationProvider',
+  'firstName',
+  'lastName',
+  'profilePictureURI',
+  'vanityName',
   'bio',
-  'website_uri',
-  'blog_uri',
-  'blog_feed_uri',
-  'cv_uri',
-  'linkedin_uri',
-  'github_username',
-  'twitter_username'
+  'websiteURI',
+  'blogURI',
+  'blogFeedURI',
+  'cvURI',
+  'linkedInURI',
+  'githubUsername',
+  'twitterUsername'
+];
+
+const PRIVATE_API_ATTRIBUTES = [
+  'emailAddress',
+  'verified'
 ];
 
 const DEFAULT_ORDER = [
@@ -71,6 +76,23 @@ function validateNewUserFeedLoop(properties) {
   return properties;
 }
 
+function validateUniqueConstraints(error) {
+  if (error.name === 'SequelizeUniqueConstraintError') {
+    const errorInfo = {};
+
+    if (error.fields.vanity_name) {
+      errorInfo.vanityName = 'already in use';
+    }
+    if (error.fields.blog_feed_uri) {
+      errorInfo.blogFeedURI = 'already in use';
+    }
+
+    throw new UniqueConstraintError(errorInfo);
+  } else {
+    throw error;
+  }
+}
+
 function attachAuthenticationDetailsToUser(properties, authenticationDetails) {
   const authenticatedUser = properties;
   authenticatedUser.authenticationId = authenticationDetails.authenticationId;
@@ -81,20 +103,13 @@ function attachAuthenticationDetailsToUser(properties, authenticationDetails) {
 
 function saveUserToDatabase(properties) {
   return User.create(properties)
-    .catch(error => {
-      if (error.name === 'SequelizeUniqueConstraintError') {
-        const errorInfo = {};
+    .catch(validateUniqueConstraints);
+}
 
-        if (error.fields.vanity_name) {
-          errorInfo.vanityName = 'already in use';
-        }
-        if (error.fields.blog_feed_uri) {
-          errorInfo.blogFeedURI = 'already in use';
-        }
-
-        throw new UniqueConstraintError(errorInfo);
-      }
-    });
+function updateUserInDatabase(id, properties) {
+  return User.update(properties, {
+    where: { id }
+  }).catch(validateUniqueConstraints);
 }
 
 export function getAll() {
@@ -171,8 +186,10 @@ export function getById(id, verifiedOnly = true) {
 }
 
 export function getByAuthenticationDetails(provider, id) {
+  const attributes = PUBLIC_API_ATTRIBUTES.concat(PRIVATE_API_ATTRIBUTES);
+
   return User.findOne({
-    attributes: PUBLIC_API_ATTRIBUTES,
+    attributes,
     where: {
       authentication_provider: provider,
       authentication_id: id
@@ -203,6 +220,19 @@ export function getByVanityName(vanityName) {
   });
 }
 
+export function removeById(id) {
+  return new Promise((resolve, reject) => {
+    User.destroy({
+      where: { id }
+    })
+      .then(resolve)
+      .catch(error => {
+        log.error({ error, id }, 'Error deleting user');
+        reject(error);
+      });
+  });
+}
+
 export function getPage(pageNumber, pageSize) {
   return new Promise((resolve, reject) => {
     User.findAll({
@@ -228,7 +258,15 @@ export function create(properties, authenticationDetails) {
 
   return validateNewUserSchema(trimmedProps)
           .then(validateNewUserFeedLoop)
-          .then(user => attachAuthenticationDetailsToUser(user, authenticationDetails))
+          .then(props => attachAuthenticationDetailsToUser(props, authenticationDetails))
           .then(authenticatedUser => saveUserToDatabase(authenticatedUser))
           .then(newUserModel => getById(newUserModel.dataValues.id, false));
+}
+
+export function update(properties, userId) {
+  const trimmedProps = trimNewUserJSON(properties);
+
+  return validateNewUserSchema(trimmedProps)
+          .then(validateNewUserFeedLoop)
+          .then(props => updateUserInDatabase(userId, props));
 }
