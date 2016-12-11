@@ -14,4 +14,4 @@ COPY . /usr/src/csblogs-api-server
 EXPOSE 80
 
 ENTRYPOINT [ "npm", "run" ];
-CMD ["start"]
+CMD ["build-and-run"]

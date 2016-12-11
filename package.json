@@ -1,17 +1,19 @@
 {
   "name": "csblogs-api",
-  "version": "0.0.1",
+  "version": "2.0.0",
+  "engines": {
+    "node": "6.x.x",
+    "npm": "3.x.x"
+  },
   "description": "An API to access CS Blogs feed and user data",
   "main": "app/server.js",
   "directories": {
     "test": "tests"
   },
   "scripts": {
-    "start": "npm run build-and-run | bunyan",
-    "start-production": "node ./app/server.js",
-    "build-and-run": "npm run build && node ./app/server.js",
-    "build": "npm run build:js",
-    "build:js": "rm -rf app/ && babel src/ -d app/ --copy-files",
+    "start": "node ./app/server.js | bunyan",
+    "build-and-run": "rm -rf app/ && npm run build && npm start",
+    "build": "babel src/ -d app/ --copy-files",
     "lint": "eslint .",
     "test": "istanbul cover ./node_modules/.bin/_mocha -- --compilers js:babel-register --require tests/chai-config.js --recursive ./tests/**/*.tests.js",
     "deploy": "now --public --docker -e PORT=80 -e CSBLOGS_DATABASE_NAME=@csb-db-name -e CSBLOGS_DATABASE_USERNAME=@csb-db-user -e CSBLOGS_DATABASE_PASSWORD=@csb-db-password -e CSBLOGS_DATABASE_HOST=@csb-db-host -e CSBLOGS_DATABASE_PORT=@csb-db-port -e CSBLOGS_JWT_SECRET=@csb-jwt-secret -e CSBLOGS_DATABASE_LOG_SQL_STATEMENTS=true -e NODE_ENV=production"
@@ -37,10 +39,6 @@
   },
   "homepage": "https://github.com/csblogs/api.csblogs.com#readme",
   "devDependencies": {
-    "babel-cli": "^6.18.0",
-    "babel-plugin-array-includes": "^2.0.3",
-    "babel-preset-es2015": "^6.18.0",
-    "babel-register": "^6.18.0",
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
     "eslint": "^3.11.1",
@@ -54,6 +52,10 @@
   },
   "dependencies": {
     "ajv": "^4.9.2",
+    "babel-cli": "^6.18.0",
+    "babel-plugin-array-includes": "^2.0.3",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-register": "^6.18.0",
     "body-parser": "^1.15.2",
     "bunyan": "^1.8.5",
     "express": "^4.14.0",
