@@ -1,1 +1,1 @@
-require('./app/server.js').start();
+require('./app/app.js').default();
