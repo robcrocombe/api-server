@@ -12,7 +12,7 @@ import notFoundRoute from './errors/not-found-routes';
 import unexpectedErrorRoute from './errors/unexpected-error-routes';
 import bodyParserSyntaxError from './errors/body-parser-json-syntax-error';
 
-function startServer() {
+export default function start() {
   database.sync()
     .then(() => {
       log.info('Connected to Database Successfully');
@@ -44,9 +44,9 @@ function startServer() {
           name: process.env.CSBLOGS_DATABASE_NAME,
           username: process.env.CSBLOGS_DATABASE_USERNAME
         });
-        setTimeout(startServer, 1000);
+        setTimeout(start, 1000);
       }
     });
 }
 
-startServer();
+// startServer();
