@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "engines": {
     "node": "6.6.0",
-    "npm": "3.10.9"
+    "npm": "3.10.3"
   },
   "description": "An API to access CS Blogs feed and user data",
   "main": "app/server.js",
