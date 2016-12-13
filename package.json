@@ -2,7 +2,7 @@
   "name": "csblogs-api",
   "version": "2.0.0",
   "engines": {
-    "node": "6.9.1",
+    "node": "6.6.0",
     "npm": "3.10.9"
   },
   "description": "An API to access CS Blogs feed and user data",
