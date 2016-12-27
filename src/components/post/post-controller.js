@@ -5,15 +5,15 @@ const PUBLIC_API_ATTRIBUTES = [
   'id',
   'title',
   'link',
-  'image_uri',
+  'imageURI',
   'description',
-  'date_updated',
-  'date_published',
-  'author_id'
+  'dateUpdated',
+  'datePublished',
+  'authorId'
 ];
 
 const DEFAULT_ORDER = [
-  ['date_published', 'DESC']
+  ['datePublished', 'DESC']
 ];
 
 export function getAll() {
