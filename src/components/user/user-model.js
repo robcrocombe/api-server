@@ -1,6 +1,8 @@
 import Sequelize from 'sequelize';
 import database from '../../database';
 
+const URI = Sequelize.STRING(2048);
+
 export default database.define('user', {
   id: {
     type: Sequelize.INTEGER,
@@ -42,7 +44,7 @@ export default database.define('user', {
     allowNull: false
   },
   profilePictureURI: {
-    type: Sequelize.STRING,
+    type: URI,
     field: 'profile_picture_uri',
     allowNull: false
   },
@@ -58,26 +60,26 @@ export default database.define('user', {
     allowNull: false
   },
   websiteURI: {
-    type: Sequelize.STRING,
+    type: URI,
     field: 'website_uri'
   },
   blogURI: {
-    type: Sequelize.STRING,
+    type: URI,
     field: 'blog_uri',
     allowNull: false
   },
   blogFeedURI: {
-    type: Sequelize.STRING,
+    type: URI,
     field: 'blog_feed_uri',
     allowNull: false,
     unique: true
   },
   cvURI: {
-    type: Sequelize.STRING,
+    type: URI,
     field: 'cv_uri'
   },
   linkedInURI: {
-    type: Sequelize.STRING,
+    type: URI,
     field: 'linkedin_uri'
   },
   githubUsername: {

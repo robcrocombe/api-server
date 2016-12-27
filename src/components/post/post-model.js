@@ -2,6 +2,8 @@ import Sequelize from 'sequelize';
 import database from '../../database';
 import User from '../user/user-model';
 
+const URI = Sequelize.STRING(2048);
+
 const blogPostDatabaseDefinition = database.define('blog_post', {
   id: {
     type: Sequelize.INTEGER,
@@ -16,12 +18,12 @@ const blogPostDatabaseDefinition = database.define('blog_post', {
     allowNull: false
   },
   link: {
-    type: Sequelize.STRING,
+    type: URI,
     field: 'link',
     allowNull: false
   },
   imageURI: {
-    type: Sequelize.TEXT,
+    type: URI,
     field: 'image_uri',
     allowNull: true
   },
