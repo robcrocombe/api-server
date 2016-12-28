@@ -1,8 +1,8 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import { initDbLogger, database } from 'csblogs-common';
 
 import log from './log';
-import database from './database';
 import configureHelmet from './middleware/configure-helmet';
 import requestLogger from './middleware/request-logger';
 import userRoutes from './components/user/user-routes';
@@ -13,6 +13,8 @@ import unexpectedErrorRoute from './errors/unexpected-error-routes';
 import bodyParserSyntaxError from './errors/body-parser-json-syntax-error';
 
 function startServer() {
+  initDbLogger(log);
+
   database.sync()
     .then(() => {
       log.info('Connected to Database Successfully');

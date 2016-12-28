@@ -1,4 +1,4 @@
-import BlogPost from './post-model';
+import { BlogPost } from 'csblogs-common';
 import log from '../../log';
 
 const PUBLIC_API_ATTRIBUTES = [

@@ -1,9 +1,8 @@
 import Ajv from 'ajv';
 import URI from 'urijs';
+import { User, UserSchema } from 'csblogs-common';
 
-import User from './user-model';
 import log from '../../log';
-import newUserSchema from './new-user-schema.json';
 import SchemaValidationError from '../../errors/schema-validation-error';
 import UniqueConstraintError from '../../errors/unique-constraint-error';
 import FeedLoopError from '../../errors/feed-loop-error';
@@ -57,7 +56,7 @@ function trimNewUserJSON(originalProps) {
 function validateNewUserSchema(properties) {
   return new Promise((resolve, reject) => {
     const ajv = new Ajv({ allErrors: true });
-    const validate = ajv.compile(newUserSchema);
+    const validate = ajv.compile(UserSchema);
     if (!validate(properties)) {
       reject(new SchemaValidationError('New User', validate.errors));
     } else {
