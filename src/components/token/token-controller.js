@@ -74,7 +74,11 @@ export function generateAuthenticationToken(authenticationProvider, accessToken,
       getUserDetailsPromise = getStackExchangeUserDetails;
       break;
     default:
-      throw new Error('Authentication Provider Required');
+      return Promise.reject((() => {
+        const error = new Error('Invalid authentication provider');
+        error.status = 422;
+        return error;
+      })());
   }
 
   return getUserDetailsPromise(accessToken, accessAppKey)
