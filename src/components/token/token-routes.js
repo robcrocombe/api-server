@@ -7,14 +7,30 @@ router.post('/', (req, res) => {
   const authenticationProvider = req.body.authenticationProvider;
   const accessToken = req.body.accessToken;
   const accessAppKey = req.body.accessAppKey;
+  const missingParams = [];
 
-  token.generateAuthenticationToken(authenticationProvider, accessToken, accessAppKey)
+  if (!authenticationProvider) {
+    missingParams.push('authenticationProvider');
+  }
+  if (!accessToken) {
+    missingParams.push('accessToken');
+  }
+  if (!accessAppKey) {
+    missingParams.push('accessAppKey');
+  }
+
+  if (missingParams.length > 0) {
+    const errorMessage = `Missing parameters: ${missingParams.join(', ')}`;
+    return res.status(422).json({ error: errorMessage });
+  }
+
+  return token.generateAuthenticationToken(authenticationProvider, accessToken, accessAppKey)
     .then(authDetails => res.json(authDetails))
     .catch(error => {
-      if (error.name === 'ThirdPartyAuthenticationError') {
-        return res.status(422).json({ error: error.message });
+      if (error.message === 'Unauthorized') {
+        return res.status(401).json({ error: error.message });
       }
-      throw error;
+      return res.status(error.status || 500).json({ error: error.message });
     });
 });
 
