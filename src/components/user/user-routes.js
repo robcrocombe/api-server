@@ -58,7 +58,11 @@ router.post('/', authenticateUnregistered, (req, res) => {
         case 'SchemaValidationError':
         case 'UniqueConstraintError':
         case 'FeedLoopError':
-          res.status(422).json({ error: error.message, validationErrors: error.validationErrors });
+          res.status(422).json({
+            name: error.name,
+            error: error.message,
+            validationErrors: error.validationErrors
+          });
           break;
         default:
           log.error('An unexpected error occured', error);
@@ -106,7 +110,11 @@ router.put('/me', authenticate, (req, res) => {
         case 'SchemaValidationError':
         case 'UniqueConstraintError':
         case 'FeedLoopError':
-          res.status(422).json({ error: error.message, validationErrors: error.validationErrors });
+          res.status(422).json({
+            name: error.name,
+            error: error.message,
+            validationErrors: error.validationErrors
+          });
           break;
         default:
           log.error('An unexpected error occured', error);

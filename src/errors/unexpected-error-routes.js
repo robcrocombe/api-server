@@ -4,7 +4,7 @@ export default function unexpectedErrorRoute(err, req, res, next) { // eslint-di
   log.error('Uncaught exception', err);
 
   res.status(500).json({
-    error: 'An unexpected error occured. Please try again. If the error persists please submit an issue',
+    error: 'An unexpected error occured. Please try again. If the error persists please submit an issue.',
     issues: 'https://github.com/csblogs/api-server/issues'
   });
 }
